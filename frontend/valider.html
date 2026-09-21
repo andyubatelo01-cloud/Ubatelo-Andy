@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validation de campagne</title>
+  <meta name="description" content="Centre de validation mobile du Bureau du Pasteur.">
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body { padding: 16px; max-width: 560px; margin: 0 auto; }
+    .hero { text-align: center; padding: 10px 0 6px; }
+    .hero .logo { font-size: 2.2rem; }
+    .actions .btn { width: 100%; justify-content: center; padding: 14px; font-size: 1.05rem; }
+    .actions { display: grid; gap: 10px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="hero"><div class="logo">🕊️</div><h1>Bureau du Pasteur</h1><p class="muted">Centre de validation</p></div>
+  <div id="content" class="card"><p class="muted">Chargement de la campagne…</p></div>
+  <div class="toast" id="toast"></div>
+  <script>
+  (() => {
+    const token = location.pathname.split("/").pop();
+    const root = document.getElementById("content");
+    const STATUS_FR = { DRAFT: "Brouillon", READY_FOR_REVIEW: "À valider", BLOCKED: "Bloquée", APPROVED: "Validée", SCHEDULED: "Programmée", SENDING: "Envoi en cours", SENT: "Envoyée", FAILED: "Échec", CANCELLED: "Annulée", EXPIRED: "Expirée" };
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const toast = (msg, err) => { const t = document.createElement("div"); t.textContent = msg; if (err) t.className = "err"; document.getElementById("toast").append(t); setTimeout(() => t.remove(), 6000); };
+    let creds = { email: "", password: "" };
+
+    async function load() {
+      const r = await fetch(`/api/valider/${token}`);
+      const d = await r.json();
+      if (!r.ok) { root.innerHTML = `<div class="alert danger">${esc(d.detail || "Lien invalide.")}</div><p class="muted small">Ouvrez le tableau de bord pour demander un nouveau lien.</p>`; return; }
+      render(d);
+    }
+    function render(c, extra = "") {
+      const anomalies = c.anomalies.map((a) => `<li class="${a.level === "BLOCK" ? "block" : "warn"}">${esc(a.label)}${a.detail ? " — " + esc(a.detail) : ""}</li>`).join("") || `<li class="ok">Tous les contrôles sont passés.</li>`;
+      root.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h2>📨 ${esc(c.nom)}</h2><span class="badge ${esc(c.statut)}">${esc(STATUS_FR[c.statut] || c.statut)}</span></div>
+        <dl class="kv" style="grid-template-columns:130px 1fr">
+          <dt>Référence</dt><dd class="mono">${esc(c.ref)}</dd>
+          <dt>Objectif</dt><dd>${esc(c.objectif || "—")}</dd>
+          <dt>Envoi</dt><dd>${esc(c.date_envoi_texte)}</dd>
+          <dt>Canal</dt><dd>${esc(c.canal)}</dd>
+          <dt>Destinataires</dt><dd><strong>${c.nombre_destinataires}</strong></dd>
+          <dt>Groupes</dt><dd>${esc(c.groupes.join(", ") || (c.membres_cibles ? c.membres_cibles + " membre(s) ciblé(s)" : "—"))}</dd>
+          <dt>Variables</dt><dd>${esc(c.variables.join(" ") || "aucune")}</dd>
+          <dt>Exclus</dt><dd>${c.exclus.length}</dd>
+          <dt>Coût estimé</dt><dd>${c.canal === "EMAIL" ? "—" : c.cout_estime_eur.toFixed(2) + " €"}</dd>
+        </dl>
+        <h3 style="margin-top:12px">Message</h3><pre class="msg">${esc(c.message)}</pre>
+        <div class="muted small">Aperçu :</div><pre class="msg">${esc(c.apercu_rendu)}</pre>
+        <h3>Contrôles</h3><ul class="check-list" style="grid-template-columns:1fr">${anomalies}</ul>
+        ${c.double_validation ? `<div class="alert warn">⚠️ Cette campagne concerne ${c.nombre_destinataires} personnes : double validation requise.</div>` : ""}
+        ${extra}
+        <hr>
+        <h3>Identité du pasteur</h3>
+        <label class="field">E-mail<input type="email" id="email" value="${esc(creds.email)}" autocomplete="username"></label>
+        <label class="field" style="margin-top:8px">Mot de passe<input type="password" id="password" autocomplete="current-password"></label>
+        <div class="actions" id="actions"></div>
+        <p class="muted small" style="margin-top:12px">Lien à usage unique, lié au contenu exact de cette campagne. Sans action de votre part, rien ne sera envoyé.</p>`;
+      const actions = document.getElementById("actions");
+      const mk = (cls, label, action) => { const b = document.createElement("button"); b.className = "btn " + cls; b.textContent = label; b.onclick = () => decide(action, c); actions.append(b); };
+      if (c.confirmation_en_attente) {
+        actions.innerHTML = `<label class="field">Tapez exactement « CONFIRMER L'ENVOI »<input type="text" id="phrase" placeholder="CONFIRMER L'ENVOI"></label>`;
+        mk("validate", "✅ CONFIRMER L'ENVOI", "CONFIRMER");
+      } else if (c.statut === "READY_FOR_REVIEW" && !c.bloquee) {
+        mk("validate", "🟢 VALIDER ET ENVOYER", "VALIDER");
+      } else if (c.bloquee) {
+        actions.innerHTML = `<div class="alert danger">⛔ Campagne bloquée par les contrôles : corrigez-la depuis le tableau de bord.</div>`;
+      }
+      const modify = document.createElement("a"); modify.className = "btn modify"; modify.href = `/#/campagnes/${c.ref}`; modify.textContent = "✏️ MODIFIER (tableau de bord)"; actions.append(modify);
+      if (["READY_FOR_REVIEW", "BLOCKED", "DRAFT"].includes(c.statut)) mk("danger", "🔴 ANNULER", "ANNULER");
+    }
+    async function decide(action, c) {
+      creds = { email: document.getElementById("email").value, password: document.getElementById("password").value };
+      if (!creds.email || !creds.password) { toast("Indiquez votre e-mail et votre mot de passe.", true); return; }
+      if (action === "VALIDER" && !confirm(`Valider et envoyer à ${c.nombre_destinataires} destinataire(s) ?`)) return;
+      if (action === "ANNULER" && !confirm("Annuler cette campagne ?")) return;
+      const phrase = document.getElementById("phrase")?.value || "";
+      const r = await fetch(`/api/valider/${token}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, phrase, ...creds }) });
+      const d = await r.json();
+      if (!r.ok) { toast(d.detail || "Erreur", true); return; }
+      if (d.double_validation) { render(d.preview, `<div class="alert warn">${esc(d.message)}</div>`); return; }
+      const s = d.preview.statut;
+      const msg = s === "SENT" ? `✅ Envoyée : ${d.resultat.sent} message(s), ${d.resultat.failed} échec(s).` : s === "SCHEDULED" ? "✅ Validée et programmée : l'envoi partira à l'heure prévue." : s === "CANCELLED" ? "🔴 Campagne annulée. Aucun message envoyé." : `Statut : ${s}`;
+      root.innerHTML = `<div class="alert ${s === "CANCELLED" ? "info" : "ok"}">${esc(msg)}</div><p class="muted small">Ce lien est maintenant désactivé.</p><a class="btn" href="/">Ouvrir le tableau de bord</a>`;
+    }
+    load().catch(() => { root.innerHTML = `<div class="alert danger">Impossible de charger la campagne.</div>`; });
+  })();
+  </script>
+</body>
+</html>

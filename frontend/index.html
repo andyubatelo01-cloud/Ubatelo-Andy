@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bureau du Pasteur</title>
+  <meta name="description" content="Bureau d'IA de gestion et de communication pastorale : l'IA prépare, le pasteur valide, le système envoie.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕊️</text></svg>">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div id="login" class="login hidden">
+    <div class="card">
+      <div class="brand"><span class="logo">🕊️</span> Bureau du Pasteur</div>
+      <p class="muted">L'IA prépare · le pasteur valide · le système envoie.</p>
+      <form id="login-form">
+        <label class="field">E-mail<input type="email" name="email" required autocomplete="username"></label>
+        <label class="field" style="margin-top:8px">Mot de passe<input type="password" name="password" required autocomplete="current-password"></label>
+        <div id="login-error" class="alert danger hidden"></div>
+        <div class="btn-row"><button class="btn primary" type="submit">Se connecter</button></div>
+      </form>
+      <p class="small muted" style="margin-top:14px">Démonstration : <span class="mono">pasteur@exemple.org</span> / <span class="mono">changez-moi</span> (si les valeurs par défaut sont conservées).</p>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="logo">🕊️</span> Bureau du Pasteur</div>
+      <nav class="nav" id="nav">
+        <a href="#/dashboard" data-route="dashboard">🏠 <span>Dashboard</span></a>
+        <a href="#/membres" data-route="membres">👥 <span>Membres</span></a>
+        <a href="#/communications" data-route="communications">💬 <span>Communications</span></a>
+        <a href="#/evenements" data-route="evenements">📅 <span>Événements</span></a>
+        <a href="#/suivi" data-route="suivi">❤️ <span>Suivi</span></a>
+        <a href="#/campagnes" data-route="campagnes">📨 <span>Campagnes</span> <span class="badge count hidden" id="badge-pending"></span></a>
+        <a href="#/statistiques" data-route="statistiques">📊 <span>Statistiques</span></a>
+        <a href="#/agents" data-route="agents">🤖 <span>Agents IA</span></a>
+        <a href="#/taches" data-route="taches">📋 <span>Tâches</span></a>
+        <a href="#/parametres" data-route="parametres">⚙️ <span>Paramètres</span></a>
+        <a href="#/securite" data-route="securite">🔐 <span>Sécurité</span></a>
+      </nav>
+      <hr>
+      <div class="small muted" style="padding:0 10px">
+        <div id="side-user"></div>
+        <div class="btn-row"><button class="btn sm ghost" id="btn-theme">🌓 Thème</button><button class="btn sm ghost" id="btn-logout">Déconnexion</button></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="btn menu-toggle" id="btn-menu">☰</button>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="user">
+          <button class="btn sm" id="btn-notifs">🔔 <span id="notif-count">0</span></button>
+        </div>
+      </div>
+      <div id="view"></div>
+    </main>
+  </div>
+  <div id="modal-root"></div>
+  <div class="toast" id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
