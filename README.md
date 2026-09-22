@@ -79,7 +79,7 @@ Depuis la page **Membres → 📥 Importer**, trois fichiers sont acceptés, ave
 | **Tableur** (`.csv`, Excel / Numbers / Google Contacts) | Colonnes reconnues : Prénom, Nom, Téléphone, E-mail, Responsabilité (ou une colonne « Nom complet »). |
 | **Groupe WhatsApp** (`.txt`) | Ouvrir le groupe → nom du groupe → « Exporter la discussion » → « Sans médias ». Les participants enregistrés dans le téléphone arrivent avec leur nom, les autres avec leur numéro (nom provisoire « Contact », à corriger sur la fiche). |
 
-Les numéros sont normalisés au format international, les doublons (dans le fichier ou déjà en base) sont ignorés, les nouveaux arrivent dans le groupe « Membres » plus le groupe choisi, marqués « nouveau ». **Aucun consentement n'est déduit d'un import** : il se coche ensuite sur chaque fiche, avec date.
+Les numéros sont normalisés au format international. Dans l'aperçu, chaque contact est coché par défaut : décochez ceux qui ne font pas partie de la communauté. Les nouveaux arrivent dans le groupe « Membres » plus le groupe choisi, marqués « nouveau ». Un contact **déjà membre** (même téléphone, même e-mail, ou même nom pour un participant WhatsApp sans numéro) n'est pas recréé : il est ajouté au groupe choisi. Pour un groupe WhatsApp, importez donc d'abord votre répertoire, puis l'export du groupe en choisissant le groupe cible. **Aucun consentement n'est déduit d'un import** : il se coche ensuite sur chaque fiche, avec date.
 
 ## La règle absolue, et comment elle est garantie
 

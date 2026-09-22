@@ -107,12 +107,12 @@ def test_prepare_flags_duplicates_and_invalid(db, members):
     text = "BEGIN:VCARD\nFN:Déjà Là\nTEL;type=CELL:+33 6 00 00 00 01\nEND:VCARD\n" + VCARD
     res = mi.prepare(db, "contacts.vcf", text.encode())
     by_name = {c.display_name: c for c in res.contacts}
-    assert by_name["Déjà Là"].problem.startswith("déjà présent")
+    assert by_name["Déjà Là"].problem == "" and by_name["Déjà Là"].existing_id == members[0].id  # sera ajouté au groupe, pas recréé
     assert by_name["Marie Dupont"].problem == "" and by_name["Marie Dupont"].phone == "+33612345678" and by_name["Marie Dupont"].email == "marie.dupont@example.org"
     assert by_name["René Bouchard"].problem == "" and by_name["René Bouchard"].phone == "+41791234567"
-    assert by_name["Sans Numero"].problem == "ni téléphone ni e-mail"
-    assert by_name["Doublon"].problem.startswith("déjà présent")  # même numéro que Marie dans le fichier
-    assert len(res.importable) == 3
+    assert by_name["Sans Numero"].problem.startswith("ni téléphone ni e-mail")
+    assert by_name["Doublon"].problem.startswith("en double dans le fichier")  # même numéro que Marie dans le fichier
+    assert len(res.to_create) == 3 and len(res.existing) == 1
 
 
 def test_api_import_two_steps(client, db):
@@ -140,10 +140,20 @@ def test_api_import_two_steps(client, db):
     # Aucun consentement n'est déduit d'un import
     assert not (marie["consent_sms"] or marie["consent_whatsapp"] or marie["consent_email"])
 
-    # 3. Re-importer le même fichier n'ajoute rien
+    # 3. Re-importer le même fichier ne recrée personne ; avec un groupe, les membres connus y sont ajoutés
     files = {"file": ("contacts.vcf", io.BytesIO(VCARD.encode()), "text/vcard")}
-    r = client.post("/api/membres/import", files=files, data={"dry_run": "false"}, headers=h)
-    assert r.json()["crees"] == 0 and r.json()["ignores"] == 5
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false", "group_id": str(groups["Jeunesse"])}, headers=h)
+    p = r.json()
+    assert p["crees"] == 0 and p["existants"] == 3 and p["ajoutes_au_groupe"] == 3 and p["ignores"] == 2
+    assert len(client.get("/api/membres", headers=h).json()) == 3
+    marie = next(m for m in client.get("/api/membres", headers=h).json() if m["last_name"] == "Dupont")
+    assert set(marie["groups"]) == {"Membres", "Chorale", "Jeunesse"}
+
+    # 4. Exclure des lignes avec skip (index dans l'aperçu)
+    files = {"file": ("c.csv", io.BytesIO("Prénom;Nom;Téléphone\nA;Un;0611111111\nB;Deux;0622222222\n".encode()), "text/csv")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false", "skip": "0"}, headers=h)
+    assert r.json()["crees"] == 1
+    assert [m["first_name"] for m in client.get("/api/membres?q=Deux", headers=h).json()] == ["B"]
 
 
 def test_api_import_whatsapp_and_errors(client):
@@ -155,7 +165,7 @@ def test_api_import_whatsapp_and_errors(client):
     assert p["format"] == "whatsapp"
     # Les participants nommés sans numéro sont signalés, les numéros cités sont importés avec un nom provisoire
     named = next(c for c in p["contacts"] if c["prenom"] == "Marie")
-    assert named["probleme"] == "ni téléphone ni e-mail"
+    assert named["probleme"].startswith("ni téléphone ni e-mail")
     assert p["crees"] == 2
     listed = client.get("/api/membres", headers=h).json()
     assert {m["phone"] for m in listed} == {"+33698765432", "+33611223344"}
@@ -177,3 +187,29 @@ def test_api_import_whatsapp_and_errors(client):
     # Fichier vide / sans contact
     assert client.post("/api/membres/import", files={"file": ("v.csv", io.BytesIO(b""), "text/csv")}, headers=h).status_code == 400
     assert client.post("/api/membres/import", files={"file": ("n.txt", io.BytesIO(b"bonjour"), "text/plain")}, headers=h).status_code == 400
+
+
+def test_whatsapp_group_flow_after_phone_book_import(client):
+    """Cas réel : 1) import du répertoire (vCard), 2) import de l'export du groupe WhatsApp dans un groupe.
+    Les participants nommés (contacts enregistrés) sont retrouvés par leur nom et ajoutés au groupe."""
+    h = login(client)
+    groups = {g["nom"]: g["id"] for g in client.get("/api/groupes", headers=h).json()}
+    files = {"file": ("contacts.vcf", io.BytesIO(VCARD.encode()), "text/vcard")}
+    assert client.post("/api/membres/import", files=files, data={"dry_run": "false"}, headers=h).json()["crees"] == 3
+
+    files = {"file": ("Discussion WhatsApp avec Jeunesse.txt", io.BytesIO(WHATSAPP_ANDROID.encode()), "text/plain")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "true", "group_id": str(groups["Jeunesse"])}, headers=h)
+    p = r.json()
+    marie = next(c for c in p["contacts"] if c["prenom"] == "Marie")
+    assert marie["existant"] is True and marie["action"] == "ajouter_au_groupe"
+    paul_number = next(c for c in p["contacts"] if c["telephone"] == "+33698765432")
+    assert paul_number["existant"] is True  # Paul Martin importé depuis la vCard, retrouvé par son numéro
+    sophie = next(c for c in p["contacts"] if c["nom"] == "LEROY")
+    assert sophie["importable"] is False  # nom inconnu et pas de numéro : impossible de la joindre
+
+    files = {"file": ("Discussion WhatsApp avec Jeunesse.txt", io.BytesIO(WHATSAPP_ANDROID.encode()), "text/plain")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false", "group_id": str(groups["Jeunesse"])}, headers=h)
+    p = r.json()
+    assert p["crees"] == 1 and p["ajoutes_au_groupe"] == 2  # +33611223344 créé ; Marie et Paul ajoutés à Jeunesse
+    jeunesse = client.get(f"/api/groupes/{groups['Jeunesse']}", headers=h).json()
+    assert {m["nom"] for m in jeunesse["membres"]} == {"Marie Dupont", "Paul Martin", "Contact +33611223344"}

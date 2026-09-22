@@ -67,6 +67,7 @@ async def import_members(
     dry_run: bool = Form(default=True),
     group_id: int | None = Form(default=None),
     format: str | None = Form(default=None),
+    skip: str = Form(default=""),
     db: Session = Depends(get_db),
     actor: User = Depends(staff),
 ):
@@ -74,7 +75,9 @@ async def import_members(
     ou une discussion de groupe WhatsApp exportée (.txt).
 
     Deux temps : ``dry_run=true`` renvoie l'aperçu (contacts importables / ignorés et pourquoi),
-    ``dry_run=false`` crée les membres. Aucun consentement n'est enregistré à l'import."""
+    ``dry_run=false`` crée les membres (``skip`` : index des lignes à écarter, séparés par des virgules).
+    Un contact déjà membre n'est pas recréé : il est ajouté au groupe choisi.
+    Aucun consentement n'est enregistré à l'import."""
     data = await file.read()
     if not data:
         raise HTTPException(400, "Fichier vide.")
@@ -92,7 +95,11 @@ async def import_members(
         raise HTTPException(400, "Un groupe dynamique se calcule automatiquement : choisissez un groupe classique.")
     if dry_run:
         return result.as_dict()
-    member_import.commit_import(db, result, actor.name, group)
+    try:
+        skipped = {int(x) for x in skip.split(",") if x.strip()}
+    except ValueError:
+        raise HTTPException(400, "Paramètre skip invalide.")
+    member_import.commit_import(db, result, actor.name, group, skip=skipped)
     db.commit()
     return result.as_dict()
 

@@ -13,6 +13,7 @@ import csv
 import io
 import quopri
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from sqlalchemy import select
@@ -46,6 +47,7 @@ class ImportedContact:
     responsibility: str = ""
     source: str = ""  # information d'origine utile à l'aperçu (ex. numéro brut ou ligne CSV)
     problem: str = ""  # vide = importable
+    existing_id: int | None = None  # membre déjà en base : il sera ajouté au groupe choisi, pas recréé
 
     @property
     def display_name(self) -> str:
@@ -61,6 +63,8 @@ class ImportedContact:
             "source": self.source,
             "probleme": self.problem,
             "importable": not self.problem,
+            "existant": self.existing_id is not None,
+            "action": "ignorer" if self.problem else ("ajouter_au_groupe" if self.existing_id else "creer"),
         }
 
 
@@ -69,19 +73,30 @@ class ImportResult:
     format: str
     contacts: list[ImportedContact] = field(default_factory=list)
     created_ids: list[int] = field(default_factory=list)
+    added_to_group_ids: list[int] = field(default_factory=list)
 
     @property
     def importable(self) -> list[ImportedContact]:
         return [c for c in self.contacts if not c.problem]
 
+    @property
+    def to_create(self) -> list[ImportedContact]:
+        return [c for c in self.importable if c.existing_id is None]
+
+    @property
+    def existing(self) -> list[ImportedContact]:
+        return [c for c in self.importable if c.existing_id is not None]
+
     def as_dict(self) -> dict:
-        skipped = [c for c in self.contacts if c.problem]
         return {
             "format": self.format,
             "total": len(self.contacts),
             "importables": len(self.importable),
-            "ignores": len(skipped),
+            "nouveaux": len(self.to_create),
+            "existants": len(self.existing),
+            "ignores": len(self.contacts) - len(self.importable),
             "crees": len(self.created_ids),
+            "ajoutes_au_groupe": len(self.added_to_group_ids),
             "contacts": [c.as_dict() for c in self.contacts],
         }
 
@@ -302,16 +317,27 @@ def parse_contacts(fmt: str, text: str) -> list[ImportedContact]:
     return parse_whatsapp(text)
 
 
+def _name_key(first: str, last: str) -> str:
+    text = unicodedata.normalize("NFKD", f"{first} {last}").encode("ascii", "ignore").decode().lower()
+    return " ".join(sorted(w for w in re.split(r"[^a-z0-9]+", text) if w))
+
+
 def prepare(db: Session, filename: str, data: bytes, fmt: str | None = None) -> ImportResult:
-    """Analyse le fichier et signale, pour chaque contact, s'il est importable."""
+    """Analyse le fichier et signale, pour chaque contact, s'il est importable et s'il existe déjà."""
     text = decode_upload(data)
     fmt = fmt or detect_format(filename, text)
     result = ImportResult(format=fmt, contacts=parse_contacts(fmt, text))
 
-    existing_phones = {p for p in db.scalars(select(Member.phone).where(Member.phone != "")).all()}
-    existing_emails = {e for e in db.scalars(select(Member.email).where(Member.email != "")).all()}
+    members = db.scalars(select(Member).where(Member.anonymized.is_(False))).all()
+    by_phone = {m.phone: m.id for m in members if m.phone}
+    by_email = {m.email: m.id for m in members if m.email}
+    by_name: dict[str, int | None] = {}
+    for m in members:
+        key = _name_key(m.first_name, m.last_name)
+        by_name[key] = None if key in by_name else m.id  # homonymes : ambigu, on ne rapproche pas
     seen_phones: set[str] = set()
     seen_emails: set[str] = set()
+    seen_existing: set[int] = set()
 
     for c in result.contacts:
         c.first_name, c.last_name = c.first_name.strip()[:80], c.last_name.strip()[:80]
@@ -324,17 +350,29 @@ def prepare(db: Session, filename: str, data: bytes, fmt: str | None = None) -> 
         if c.email and not is_valid_email(c.email):
             c.problem = f"e-mail invalide ({c.email})"
             continue
+        existing = by_phone.get(c.phone) if c.phone else None
+        if existing is None and c.email:
+            existing = by_email.get(c.email)
+        if existing is None and not c.phone and not c.email and (c.first_name or c.last_name):
+            existing = by_name.get(_name_key(c.first_name, c.last_name))
+        if existing is not None:
+            if existing in seen_existing:
+                c.problem = "en double dans le fichier"
+                continue
+            seen_existing.add(existing)
+            c.existing_id = existing
+            continue
         if not c.phone and not c.email:
-            c.problem = "ni téléphone ni e-mail"
+            c.problem = "ni téléphone ni e-mail (et aucun membre de ce nom)"
             continue
         if not c.first_name and not c.last_name:
             # Numéro seul (WhatsApp non enregistré) : on garde un nom provisoire à corriger sur la fiche
             c.first_name, c.last_name = "Contact", c.phone or c.email
-        if c.phone and (c.phone in existing_phones or c.phone in seen_phones):
-            c.problem = "déjà présent (téléphone)"
+        if c.phone and c.phone in seen_phones:
+            c.problem = "en double dans le fichier (téléphone)"
             continue
-        if c.email and (c.email in existing_emails or c.email in seen_emails):
-            c.problem = "déjà présent (e-mail)"
+        if c.email and c.email in seen_emails:
+            c.problem = "en double dans le fichier (e-mail)"
             continue
         if c.phone:
             seen_phones.add(c.phone)
@@ -343,10 +381,20 @@ def prepare(db: Session, filename: str, data: bytes, fmt: str | None = None) -> 
     return result
 
 
-def commit_import(db: Session, result: ImportResult, actor: str, group: Group | None = None, mark_new: bool = True) -> ImportResult:
-    """Crée les membres importables. Aucun consentement n'est enregistré à l'import."""
+def commit_import(db: Session, result: ImportResult, actor: str, group: Group | None = None, mark_new: bool = True, skip: set[int] | None = None) -> ImportResult:
+    """Crée les membres importables (sauf les index exclus) et ajoute les membres déjà connus au groupe choisi.
+    Aucun consentement n'est enregistré à l'import."""
+    skip = skip or set()
     all_members = db.scalar(select(Group).where(Group.slug == "membres"))
-    for c in result.importable:
+    for idx, c in enumerate(result.contacts):
+        if c.problem or idx in skip:
+            continue
+        if c.existing_id is not None:
+            m = db.get(Member, c.existing_id)
+            if m is not None and group is not None and not group.dynamic_rule and m not in group.members:
+                group.members.append(m)
+                result.added_to_group_ids.append(m.id)
+            continue
         m = Member(first_name=c.first_name or "Contact", last_name=c.last_name, phone=c.phone, email=c.email, responsibility=c.responsibility, is_new=mark_new, joined_at=utcnow() if mark_new else None, admin_notes=f"Importé ({result.format}) — {c.source}" if c.source else f"Importé ({result.format})")
         if all_members is not None and not all_members.dynamic_rule:
             m.groups.append(all_members)
@@ -355,5 +403,5 @@ def commit_import(db: Session, result: ImportResult, actor: str, group: Group | 
         db.add(m)
         db.flush()
         result.created_ids.append(m.id)
-    audit.log(db, actor, "MEMBERS_IMPORTED", "member", "bulk", {"format": result.format, "created": len(result.created_ids), "skipped": len(result.contacts) - len(result.importable), "group": group.slug if group else None})
+    audit.log(db, actor, "MEMBERS_IMPORTED", "member", "bulk", {"format": result.format, "created": len(result.created_ids), "added_to_group": len(result.added_to_group_ids), "skipped": len(result.contacts) - len(result.created_ids) - len(result.added_to_group_ids), "group": group.slug if group else None})
     return result
