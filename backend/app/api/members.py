@@ -68,6 +68,7 @@ async def import_members(
     group_id: int | None = Form(default=None),
     format: str | None = Form(default=None),
     skip: str = Form(default=""),
+    apply_consent: bool = Form(default=False),
     db: Session = Depends(get_db),
     actor: User = Depends(staff),
 ):
@@ -77,7 +78,7 @@ async def import_members(
     Deux temps : ``dry_run=true`` renvoie l'aperçu (contacts importables / ignorés et pourquoi),
     ``dry_run=false`` crée les membres (``skip`` : index des lignes à écarter, séparés par des virgules).
     Un contact déjà membre n'est pas recréé : il est ajouté au groupe choisi.
-    Aucun consentement n'est enregistré à l'import."""
+    Aucun consentement n'est déduit ; ``apply_consent`` n'enregistre que les « Oui » d'une colonne de consentement."""
     data = await file.read()
     if not data:
         raise HTTPException(400, "Fichier vide.")
@@ -99,7 +100,7 @@ async def import_members(
         skipped = {int(x) for x in skip.split(",") if x.strip()}
     except ValueError:
         raise HTTPException(400, "Paramètre skip invalide.")
-    member_import.commit_import(db, result, actor.name, group, skip=skipped)
+    member_import.commit_import(db, result, actor.name, group, skip=skipped, apply_consent=apply_consent)
     db.commit()
     return result.as_dict()
 

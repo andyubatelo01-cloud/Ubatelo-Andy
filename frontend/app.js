@@ -295,6 +295,8 @@
     const groupSel = el("select", {}, el("option", { value: "" }, "Aucun groupe particulier (seulement « Membres »)"), ...state.groups.filter((g) => !g.dynamique && g.nom !== "Membres").map((g) => el("option", { value: g.id }, g.nom)));
     const preview = el("div", {});
     const confirmBtn = el("button", { class: "btn primary", type: "button", disabled: "" }, "Importer");
+    const consentBox = el("input", { type: "checkbox" });
+    const consentRow = el("label", { class: "check hidden" }, consentBox, "");
     const send = async (dryRun) => {
       if (!file.files[0]) { toast("Choisissez d'abord un fichier.", true); return null; }
       const fd = new FormData();
@@ -302,6 +304,7 @@
       fd.append("dry_run", dryRun ? "true" : "false");
       if (groupSel.value) fd.append("group_id", groupSel.value);
       if (!dryRun) fd.append("skip", [...preview.querySelectorAll("input[data-idx]:not(:checked)")].map((i) => i.dataset.idx).join(","));
+      if (!dryRun && consentBox.checked) fd.append("apply_consent", "true");
       const res = await fetch("/api/membres/import", { method: "POST", headers: { Authorization: "Bearer " + state.token }, body: fd });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : `Erreur ${res.status}`);
@@ -321,13 +324,16 @@
       const groupName = groupSel.value ? groupSel.options[groupSel.selectedIndex].text : "";
       preview.replaceChildren(
         el("p", { class: "small" }, `Format détecté : ${FORMAT_FR[r.format] || r.format} · ${r.total} contact(s) trouvé(s) · `, el("strong", {}, `${r.nouveaux} nouveau(x)`), ` · ${r.existants} déjà membre(s)`, groupName ? ` (seront ajoutés à « ${groupName} »)` : "", ` · ${r.ignores} ignoré(s)`),
+        consentRow,
         el("div", { class: "btn-row", style: "margin-bottom:6px" }, el("button", { class: "btn sm", type: "button", onclick: () => setAll(true) }, "Tout cocher"), el("button", { class: "btn sm", type: "button", onclick: () => setAll(false) }, "Tout décocher"), el("span", { class: "muted small" }, "Décochez les contacts qui ne font pas partie de la communauté.")),
         el("div", { class: "table-wrap" }, el("table", {}, el("thead", {}, el("tr", {}, ...["", "Nom", "Téléphone", "E-mail", "Remarque"].map((h) => el("th", {}, h)))),
           el("tbody", {}, ...r.contacts.map((c, idx) => el("tr", { style: c.importable ? "" : "opacity:.55" },
             el("td", {}, c.importable ? el("input", { type: "checkbox", checked: "", "data-idx": idx, onchange: refreshCount }) : "⏭️"),
             el("td", {}, `${c.prenom} ${c.nom}`.trim() || "—", c.source && c.source !== `${c.prenom} ${c.nom}`.trim() ? el("div", { class: "muted small" }, c.source) : ""),
             el("td", { class: "mono" }, c.telephone || "—"), el("td", { class: "small" }, c.email || "—"),
-            el("td", { class: "small" }, c.probleme || ACTION_FR[c.action] || "")))))));
+            el("td", { class: "small" }, c.probleme || ACTION_FR[c.action] || "", c.consentement && c.importable ? " · consentement ✓" : "")))))));
+      consentRow.classList.toggle("hidden", !r.avec_consentement);
+      consentRow.lastChild.textContent = ` Enregistrer le consentement (SMS, WhatsApp, e-mail) des ${r.avec_consentement} contact(s) ayant répondu « Oui » à la question de consentement du formulaire, avec la date de leur réponse`;
       refreshCount();
     });
     file.addEventListener("change", analyse);

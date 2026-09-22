@@ -213,3 +213,75 @@ def test_whatsapp_group_flow_after_phone_book_import(client):
     assert p["crees"] == 1 and p["ajoutes_au_groupe"] == 2  # +33611223344 créé ; Marie et Paul ajoutés à Jeunesse
     jeunesse = client.get(f"/api/groupes/{groups['Jeunesse']}", headers=h).json()
     assert {m["nom"] for m in jeunesse["membres"]} == {"Marie Dupont", "Paul Martin", "Contact +33611223344"}
+
+
+FORM_CSV = """Horodateur,PRÉNOM,NOM,Adresse e-mail,ADRESSE,TEL. PORTABLE ,ACCEPTEZ-VOUS QUE VOS DONNÉES PERSONNELLES (NOM, ADRESSE, E-MAIL) SOIENT COLLECTÉES ET UTILISÉES PAR L'ÉGLISE ?
+06/10/2024 12:37:14,Jovie,Bola,jovie@example.org,17 rue X,0769135977,Oui
+13/10/2024 12:35:54,Mathys,Vanitou ,mathys@example.org,14 rue Y,665431013,Non
+03/11/2024 18:56:28,Kethia,BUKA,couple@example.org,1 Allée Z,0612673131,Oui
+03/11/2024 18:57:39,Aaron,Mofali Kolo,couple@example.org,1 Allée Z,+33 6 62 86 88 40,Oui
+2026,,,,,,
+19/10/2025 13:12:27,Ruth,,,Bobigny,33749636058,
+"""
+
+WHATSAPP_IPHONE_GROUP = """[05/09/2024 19:18:19] CCAC COMMUNIQUÉS: \u200eLes messages et les appels sont chiffrés de bout en bout.
+[05/09/2024 19:19:10] Espeguy: \u200eEspeguy a été ajouté·e
+[09/09/2024 10:53:13] CCAC COMMUNIQUÉS: \u200e~\u202fCCAC a ajouté Deb. Ubatelo, Gaylor Manzola et 16 autres personnes
+[09/09/2024 13:28:36] ~\u202fIrene: Amen
+[09/09/2024 13:29:00] \u202a+33\u00a07\u00a078\u00a063\u00a006\u00a071\u202c: Merci
+"""
+
+
+def test_parse_form_csv_headers_consent_and_dates():
+    contacts = mi.parse_csv(FORM_CSV)
+    assert [c.display_name for c in contacts] == ["Jovie Bola", "Mathys Vanitou", "Kethia BUKA", "Aaron Mofali Kolo", "Ruth"]  # la ligne « 2026 » est ignorée
+    jovie = contacts[0]
+    assert jovie.phone == "0769135977" and jovie.email == "jovie@example.org" and jovie.consent is True
+    assert jovie.joined_at is not None and jovie.joined_at.date().isoformat() == "2024-10-06"
+    assert contacts[1].consent is False and contacts[4].consent is False
+
+
+def test_phone_normalization_tolerates_form_inputs():
+    assert mi.normalize_phone("665431013") == "+33665431013"  # sans le 0
+    assert mi.normalize_phone("33749636058") == "+33749636058"  # indicatif sans +
+    assert mi.normalize_phone("\u202a+33\u00a07\u00a078\u00a063\u00a006\u00a071\u202c") == "+33778630671"  # copie WhatsApp
+    assert not mi.is_valid_phone(mi.normalize_phone("0=11762981172"))
+    assert not mi.is_valid_phone(mi.normalize_phone("07"))
+
+
+def test_whatsapp_iphone_group_export_names_and_pushnames():
+    contacts = mi.parse_whatsapp(WHATSAPP_IPHONE_GROUP)
+    names = {c.display_name for c in contacts}
+    assert "CCAC COMMUNIQUÉS" not in names  # nom du groupe, pas une personne
+    assert {"Espeguy", "Deb. Ubatelo", "Gaylor Manzola", "Irene"} <= names  # « ~ » retiré, personnes ajoutées listées
+    assert not any("autres personnes" in n for n in names)
+    assert {mi.normalize_phone(c.phone) for c in contacts if c.phone} == {"+33778630671"}
+
+
+def test_shared_email_is_not_a_duplicate_when_phones_differ(db):
+    res = mi.prepare(db, "form.csv", FORM_CSV.encode())
+    by = {c.display_name: c for c in res.contacts}
+    assert by["Kethia BUKA"].problem == "" and by["Aaron Mofali Kolo"].problem == ""  # couple avec la même adresse
+    assert by["Mathys Vanitou"].phone == "+33665431013" and by["Ruth"].phone == "+33749636058"
+
+
+def test_api_apply_consent_only_when_requested(client):
+    h = login(client)
+    files = {"file": ("form.csv", io.BytesIO(FORM_CSV.encode()), "text/csv")}
+    p = client.post("/api/membres/import", files=files, data={"dry_run": "true"}, headers=h).json()
+    assert p["avec_consentement"] == 3
+    # Sans apply_consent : aucun consentement
+    files = {"file": ("form.csv", io.BytesIO(FORM_CSV.encode()), "text/csv")}
+    client.post("/api/membres/import", files=files, data={"dry_run": "false", "skip": "1,2,3,4"}, headers=h)
+    jovie = client.get("/api/membres?q=Bola", headers=h).json()[0]
+    assert not jovie["consent_sms"] and not jovie["consent_email"]
+    # Avec apply_consent : seuls les « Oui » sont enregistrés, sur les canaux joignables, à la date du formulaire
+    files = {"file": ("form.csv", io.BytesIO(FORM_CSV.encode()), "text/csv")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false", "apply_consent": "true"}, headers=h).json()
+    assert r["crees"] == 4
+    mathys = client.get("/api/membres?q=Vanitou", headers=h).json()[0]
+    assert not mathys["consent_sms"]
+    aaron = client.get("/api/membres?q=Mofali", headers=h).json()[0]
+    assert aaron["consent_sms"] and aaron["consent_whatsapp"] and aaron["consent_email"]
+    card = client.get(f"/api/membres/{aaron['id']}", headers=h).json()
+    assert card["consentement"]["enregistre_le"].startswith("2024-11-03") and "3 novembre" in card["date_arrivee"]

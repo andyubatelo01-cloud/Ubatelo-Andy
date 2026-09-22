@@ -42,10 +42,15 @@ def normalize_phone(raw: str) -> str:
     if not raw:
         return ""
     digits = re.sub(r"[\s().-]", "", raw)
+    digits = re.sub(r"[\u200e\u200f\u202a-\u202e\u200b]", "", digits)  # marques de direction (copie WhatsApp)
     if digits.startswith("00"):
         digits = "+" + digits[2:]
     if digits.startswith("0") and len(digits) == 10:  # numéro français national
         digits = "+33" + digits[1:]
+    elif re.fullmatch(r"[67]\d{8}", digits):  # mobile français saisi sans le 0
+        digits = "+33" + digits
+    elif re.fullmatch(r"33[1-9]\d{8}", digits):  # indicatif sans le +
+        digits = "+" + digits
     return digits
 
 
