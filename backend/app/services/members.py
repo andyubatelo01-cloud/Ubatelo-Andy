@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .. import audit
-from ..models import Attendance, Channel, Event, Group, Member, MemberNote, utcnow
+from ..models import Attendance, Channel, Delivery, Event, Group, Member, MemberNote, utcnow
 
 DEFAULT_GROUPS = [
     ("Membres", "Tous les membres de la communauté"),
@@ -221,6 +221,24 @@ def anonymize_member(db: Session, member: Member, actor: str) -> None:
     for note in list(member.notes):
         db.delete(note)
     audit.log(db, actor, "MEMBER_ANONYMIZED", "member", str(member.id))
+
+
+def has_history(db: Session, member: Member) -> bool:
+    """Un membre a un historique s'il a déjà reçu un message ou a une participation enregistrée."""
+    if any(a.registered or a.confirmed or a.present for a in member.attendances):
+        return True
+    return db.scalar(select(Delivery.id).where(Delivery.member_id == member.id).limit(1)) is not None
+
+
+def remove_member(db: Session, member: Member, actor: str) -> str:
+    """Supprime une fiche : suppression définitive si elle n'a aucun historique (mauvaise entrée, doublon
+    d'import), sinon anonymisation RGPD (statistiques agrégées conservées). Retourne « supprime » ou « anonymise »."""
+    if has_history(db, member):
+        anonymize_member(db, member, actor)
+        return "anonymise"
+    audit.log(db, actor, "MEMBER_DELETED", "member", str(member.id), {"name": member.full_name})
+    db.delete(member)
+    return "supprime"
 
 
 def add_note(db: Session, member: Member, content: str, author_id: int | None, actor: str) -> MemberNote:

@@ -278,12 +278,42 @@
   // ───────────────────────── Membres ─────────────────────────
   routes.membres = async (arg) => {
     if (arg) { openMemberCard(Number(arg)); }
+    const isPastor = state.user.role === "PASTEUR";
     const q = el("input", { type: "text", placeholder: "Rechercher (nom, téléphone, e-mail)…" });
     const groupSel = el("select", {}, el("option", { value: "" }, "Tous les groupes"), ...state.groups.map((g) => el("option", { value: g.id }, `${g.nom} (${g.effectif})`)));
     const tableWrap = el("div", { class: "card table-wrap" });
+    const selected = new Set();
+    const actionBar = el("div", { class: "btn-row hidden", style: "margin:0 0 8px" });
+    const refreshBar = () => {
+      actionBar.classList.toggle("hidden", selected.size === 0);
+      actionBar.replaceChildren(el("strong", {}, `${selected.size} sélectionné(s)`),
+        el("button", { class: "btn sm danger", type: "button", onclick: () => deleteSelected() }, `🗑️ Supprimer ${selected.size} fiche(s)`),
+        el("button", { class: "btn sm", type: "button", onclick: () => { selected.clear(); load(); } }, "Annuler la sélection"));
+    };
+    const deleteSelected = () => safe(async () => {
+      const ids = [...selected];
+      if (!confirm(`Supprimer ${ids.length} fiche(s) ?\n\nUne fiche jamais contactée et sans participation est supprimée définitivement (mauvaise entrée, doublon d'import). Une fiche avec un historique est anonymisée (RGPD).`)) return;
+      const r = await api("/membres/suppression", { method: "POST", body: { member_ids: ids } });
+      selected.clear();
+      state.groups = await api("/groupes");
+      toast(`${r.supprimes} supprimée(s), ${r.anonymises} anonymisée(s)` + (r.introuvables ? `, ${r.introuvables} introuvable(s)` : "") + ".");
+      router();
+    });
     const load = async () => {
       const list = await api(`/membres?q=${encodeURIComponent(q.value)}${groupSel.value ? "&group_id=" + groupSel.value : ""}`);
-      tableWrap.replaceChildren(el("div", { class: "muted small", style: "margin-bottom:6px" }, `${list.length} membre(s)`), el("table", {}, el("thead", {}, el("tr", {}, ...["Nom", "Téléphone", "Groupes", "Consentements", "Statut"].map((h) => el("th", {}, h)))), el("tbody", {}, ...list.map((m) => el("tr", { class: "clickable", onclick: () => openMemberCard(m.id) }, el("td", {}, el("strong", {}, `${m.first_name} ${m.last_name}`), m.is_new ? el("span", { class: "badge A_TRAITER", style: "margin-left:6px" }, "nouveau") : "", m.responsibility ? el("div", { class: "muted small" }, m.responsibility) : ""), el("td", { class: "mono" }, m.phone || "—"), el("td", { class: "small" }, m.groups.join(", ")), el("td", { class: "small" }, [m.consent_sms && "SMS", m.consent_whatsapp && "WhatsApp", m.consent_email && "E-mail"].filter(Boolean).join(" + ") || el("span", { class: "muted" }, "aucun")), el("td", {}, m.unsubscribed ? el("span", { class: "badge CANCELLED" }, "désinscrit") : el("span", { class: "badge " + (m.is_active ? "SENT" : "DRAFT") }, m.is_active ? "Actif" : "Inactif")))))));
+      const visibleIds = list.map((m) => m.id);
+      const allBox = el("input", { type: "checkbox", title: "Sélectionner toute la liste affichée", onchange: (e) => { visibleIds.forEach((id) => (e.target.checked ? selected.add(id) : selected.delete(id))); load(); } });
+      if (visibleIds.length && visibleIds.every((id) => selected.has(id))) allBox.checked = true;
+      const rowBox = (m) => el("input", { type: "checkbox", checked: selected.has(m.id) ? "" : null, onclick: (e) => e.stopPropagation(), onchange: (e) => { e.target.checked ? selected.add(m.id) : selected.delete(m.id); refreshBar(); } });
+      refreshBar();
+      tableWrap.replaceChildren(el("div", { class: "muted small", style: "margin-bottom:6px" }, `${list.length} membre(s)`, isPastor ? " · cochez des fiches pour les supprimer en lot" : ""), actionBar,
+        el("table", {}, el("thead", {}, el("tr", {}, isPastor ? el("th", { style: "width:32px" }, allBox) : null, ...["Nom", "Téléphone", "Groupes", "Consentements", "Statut"].map((h) => el("th", {}, h)))),
+          el("tbody", {}, ...list.map((m) => el("tr", { class: "clickable", onclick: () => openMemberCard(m.id) },
+            isPastor ? el("td", { onclick: (e) => e.stopPropagation() }, rowBox(m)) : null,
+            el("td", {}, el("strong", {}, `${m.first_name} ${m.last_name}`), m.is_new ? el("span", { class: "badge A_TRAITER", style: "margin-left:6px" }, "nouveau") : "", m.responsibility ? el("div", { class: "muted small" }, m.responsibility) : ""),
+            el("td", { class: "mono" }, m.phone || "—"), el("td", { class: "small" }, m.groups.join(", ")),
+            el("td", { class: "small" }, [m.consent_sms && "SMS", m.consent_whatsapp && "WhatsApp", m.consent_email && "E-mail"].filter(Boolean).join(" + ") || el("span", { class: "muted" }, "aucun")),
+            el("td", {}, m.unsubscribed ? el("span", { class: "badge CANCELLED" }, "désinscrit") : el("span", { class: "badge " + (m.is_active ? "SENT" : "DRAFT") }, m.is_active ? "Actif" : "Inactif")))))));
     };
     q.addEventListener("input", () => load()); groupSel.addEventListener("change", load); load();
     const groupsCard = el("div", { class: "card" }, el("h2", {}, "Groupes"), el("div", { class: "chips" }, ...state.groups.map((g) => el("span", { class: "chip", onclick: () => openGroup(g.id) }, `${g.dynamique ? "⚡ " : ""}${g.nom} · ${g.effectif}`))),

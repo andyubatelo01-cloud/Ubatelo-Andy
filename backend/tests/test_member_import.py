@@ -308,3 +308,32 @@ def test_reimport_completes_existing_members(client):
     assert paul["consent_sms"] and paul["consent_email"]
     mathys = client.get("/api/membres?q=Vanitou", headers=h).json()[0]
     assert not mathys["consent_sms"]
+
+
+def test_bulk_delete_purges_or_anonymizes(client, db, members, sunday):
+    """Suppression en lot : fiches sans historique supprimées, fiches contactées anonymisées, rôle PASTEUR seulement."""
+    from app.models import Attendance, Campaign, Delivery
+
+    h, hs = login(client), login(client, "sarah@test.org")
+    # Import de 2 mauvaises entrées
+    files = {"file": ("chat.txt", io.BytesIO(WHATSAPP_ANDROID.encode()), "text/plain")}
+    assert client.post("/api/membres/import", files=files, data={"dry_run": "false"}, headers=h).json()["crees"] == 2
+    bad = [m["id"] for m in client.get("/api/membres?q=Contact", headers=h).json()]
+    # members[0] a reçu un message ; members[1] a une présence enregistrée
+    camp = Campaign(ref="CAM-TEST", name="t", message="m", channel="SMS", created_by=None)
+    db.add(camp); db.flush()
+    db.add(Delivery(campaign_id=camp.id, member_id=members[0].id, channel="SMS", recipient=members[0].phone, rendered_message="m", status="SENT"))
+    db.add(Attendance(member_id=members[1].id, event_id=sunday.id, present=True))
+    db.commit()
+
+    ids = bad + [members[0].id, members[1].id, 99999]
+    assert client.post("/api/membres/suppression", json={"member_ids": ids}, headers=hs).status_code == 403
+    r = client.post("/api/membres/suppression", json={"member_ids": ids}, headers=h)
+    assert r.status_code == 200, r.text
+    assert r.json() == {"supprimes": 2, "anonymises": 2, "introuvables": 1}
+    listed = client.get("/api/membres?only_active=false", headers=h).json()
+    names = {f"{m['first_name']} {m['last_name']}" for m in listed}
+    assert not any(n.startswith("Contact ") for n in names)  # supprimées définitivement
+    assert not any(n == "Prénom1 Nom1" or n == "Prénom2 Nom2" for n in names)  # anonymisées, donc masquées
+    assert client.get(f"/api/membres/{members[0].id}", headers=h).status_code == 404
+    assert client.post("/api/membres/suppression", json={"member_ids": []}, headers=h).status_code == 422

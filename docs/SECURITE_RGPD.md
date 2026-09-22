@@ -32,7 +32,7 @@ Les agents IA ne reçoivent **jamais** la liste des membres ni leurs coordonnée
 |---|---|
 | Accès / portabilité | `GET /api/membres/{id}/export` (JSON complet, journalisé) |
 | Rectification | `PATCH /api/membres/{id}` |
-| Effacement | `DELETE /api/membres/{id}` (rôle PASTEUR) : anonymisation irréversible, notes supprimées, retrait des groupes, statistiques agrégées conservées |
+| Effacement | `DELETE /api/membres/{id}` (rôle PASTEUR) : anonymisation irréversible, notes supprimées, retrait des groupes, statistiques agrégées conservées. `POST /api/membres/suppression` (lot, rôle PASTEUR) : une fiche sans aucun historique (jamais contactée, aucune participation) est supprimée définitivement, sinon anonymisée |
 | Opposition | désinscription par canal, `STOP` |
 
 ## Journalisation

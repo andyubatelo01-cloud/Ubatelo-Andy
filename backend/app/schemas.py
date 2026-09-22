@@ -83,6 +83,10 @@ class MemberOut(BaseModel):
     groups: list[str]
 
 
+class MemberIdsIn(BaseModel):
+    member_ids: list[int] = Field(min_length=1, max_length=500)
+
+
 class NoteIn(BaseModel):
     content: str = Field(min_length=1)
 

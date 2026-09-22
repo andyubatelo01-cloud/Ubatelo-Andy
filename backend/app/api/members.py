@@ -9,7 +9,7 @@ from .. import audit
 from ..agents import BergerAgent, MembresAgent
 from ..db import get_db
 from ..models import Group, Member, User, utcnow
-from ..schemas import ConsentIn, GroupIn, MemberIn, MemberOut, MemberPatch, NoteIn
+from ..schemas import ConsentIn, GroupIn, MemberIdsIn, MemberIn, MemberOut, MemberPatch, NoteIn
 from ..services import member_import
 from ..services import members as svc
 from .deps import anyone, pastor_only, staff
@@ -103,6 +103,21 @@ async def import_members(
     member_import.commit_import(db, result, actor.name, group, skip=skipped, apply_consent=apply_consent)
     db.commit()
     return result.as_dict()
+
+
+@router.post("/membres/suppression")
+def delete_members(body: MemberIdsIn, db: Session = Depends(get_db), actor: User = Depends(pastor_only)):
+    """Suppression en lot (rôle PASTEUR). Une fiche sans historique (jamais contactée, aucune participation)
+    est supprimée définitivement ; une fiche avec historique est anonymisée (RGPD)."""
+    counts = {"supprimes": 0, "anonymises": 0, "introuvables": 0}
+    for mid in dict.fromkeys(body.member_ids):
+        m = db.get(Member, mid)
+        if m is None or m.anonymized:
+            counts["introuvables"] += 1
+            continue
+        counts[svc.remove_member(db, m, actor.name) + "s"] += 1
+    db.commit()
+    return counts
 
 
 @router.get("/membres/{member_id}")
