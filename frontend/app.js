@@ -288,8 +288,56 @@
     q.addEventListener("input", () => load()); groupSel.addEventListener("change", load); load();
     const groupsCard = el("div", { class: "card" }, el("h2", {}, "Groupes"), el("div", { class: "chips" }, ...state.groups.map((g) => el("span", { class: "chip", onclick: () => openGroup(g.id) }, `${g.dynamique ? "⚡ " : ""}${g.nom} · ${g.effectif}`))),
       el("details", { style: "margin-top:10px" }, el("summary", {}, "➕ Créer un groupe"), groupForm()));
-    return el("div", {}, el("div", { class: "card" }, el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Recherche", q), el("label", { class: "field" }, "Groupe", groupSel), el("button", { class: "btn primary", type: "button", onclick: () => memberForm() }, "➕ Nouveau membre"))), tableWrap, groupsCard);
+    return el("div", {}, el("div", { class: "card" }, el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Recherche", q), el("label", { class: "field" }, "Groupe", groupSel), el("button", { class: "btn primary", type: "button", onclick: () => memberForm() }, "➕ Nouveau membre"), el("button", { class: "btn", type: "button", onclick: () => importMembers() }, "📥 Importer (iPhone, CSV, WhatsApp)"))), tableWrap, groupsCard);
   };
+  function importMembers() {
+    const file = el("input", { type: "file", accept: ".vcf,.csv,.tsv,.txt,text/vcard,text/csv,text/plain" });
+    const groupSel = el("select", {}, el("option", { value: "" }, "Aucun groupe particulier (seulement « Membres »)"), ...state.groups.filter((g) => !g.dynamique && g.nom !== "Membres").map((g) => el("option", { value: g.id }, g.nom)));
+    const preview = el("div", {});
+    const confirmBtn = el("button", { class: "btn primary", type: "button", disabled: "" }, "Importer");
+    const send = async (dryRun) => {
+      if (!file.files[0]) { toast("Choisissez d'abord un fichier.", true); return null; }
+      const fd = new FormData();
+      fd.append("file", file.files[0]);
+      fd.append("dry_run", dryRun ? "true" : "false");
+      if (groupSel.value) fd.append("group_id", groupSel.value);
+      const res = await fetch("/api/membres/import", { method: "POST", headers: { Authorization: "Bearer " + state.token }, body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : `Erreur ${res.status}`);
+      return data;
+    };
+    const FORMAT_FR = { vcard: "répertoire (vCard)", csv: "tableur (CSV)", whatsapp: "discussion WhatsApp" };
+    const analyse = () => safe(async () => {
+      const r = await send(true);
+      if (!r) return;
+      confirmBtn.disabled = r.importables === 0;
+      confirmBtn.textContent = `Importer ${r.importables} membre(s)`;
+      preview.replaceChildren(
+        el("p", { class: "small" }, `Format détecté : ${FORMAT_FR[r.format] || r.format} · ${r.total} contact(s) trouvé(s) · `, el("strong", {}, `${r.importables} importable(s)`), ` · ${r.ignores} ignoré(s)`),
+        el("div", { class: "table-wrap" }, el("table", {}, el("thead", {}, el("tr", {}, ...["", "Nom", "Téléphone", "E-mail", "Remarque"].map((h) => el("th", {}, h)))),
+          el("tbody", {}, ...r.contacts.map((c) => el("tr", { style: c.importable ? "" : "opacity:.55" }, el("td", {}, c.importable ? "✅" : "⏭️"), el("td", {}, `${c.prenom} ${c.nom}`.trim() || "—", c.source && c.source !== `${c.prenom} ${c.nom}`.trim() ? el("div", { class: "muted small" }, c.source) : ""), el("td", { class: "mono" }, c.telephone || "—"), el("td", { class: "small" }, c.email || "—"), el("td", { class: "small" }, c.probleme || "")))))));
+    });
+    file.addEventListener("change", analyse);
+    const m = modal("📥 Importer des membres", el("div", {},
+      el("p", { class: "muted small" }, "Fichiers acceptés : répertoire iPhone / Mac / Google exporté en vCard (.vcf), tableau CSV (Prénom, Nom, Téléphone, E-mail), ou discussion de groupe WhatsApp exportée (.txt). Les doublons sont ignorés automatiquement. Aucun consentement n'est déduit d'un import : il se coche ensuite sur chaque fiche."),
+      el("details", { class: "small", style: "margin-bottom:10px" }, el("summary", {}, "Comment récupérer le fichier ?"),
+        el("ul", {}, el("li", {}, el("strong", {}, "iPhone : "), "Contacts → ouvrez une liste (ou « Tous les contacts ») → maintenez un contact appuyé → « Sélectionner » → cochez tout → « Partager » → enregistrez le .vcf dans Fichiers ou envoyez-le-vous par e-mail/AirDrop."),
+          el("li", {}, el("strong", {}, "Mac : "), "app Contacts → sélectionnez les contacts (⌘A pour tout) → Fichier → Exporter → « Exporter la vCard… »."),
+          el("li", {}, el("strong", {}, "iCloud : "), "icloud.com/contacts → ⌘A → roue crantée → « Exporter la vCard »."),
+          el("li", {}, el("strong", {}, "Groupe WhatsApp : "), "ouvrez le groupe → nom du groupe → tout en bas « Exporter la discussion » → « Sans médias » → enregistrez le .txt. Les participants enregistrés dans votre téléphone arrivent avec leur nom, les autres avec leur numéro."))),
+      el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Fichier", file), el("label", { class: "field" }, "Ajouter aussi au groupe", groupSel)),
+      preview,
+      el("div", { class: "btn-row" }, confirmBtn, el("button", { class: "btn", type: "button", onclick: () => m.close() }, "Annuler"))), { wide: true });
+    groupSel.addEventListener("change", () => { if (file.files[0]) analyse(); });
+    confirmBtn.addEventListener("click", () => safe(async () => {
+      confirmBtn.disabled = true;
+      const r = await send(false);
+      if (!r) { confirmBtn.disabled = false; return; }
+      state.groups = await api("/groupes");
+      toast(`${r.crees} membre(s) importé(s), ${r.ignores} ignoré(s).`);
+      m.close(); router();
+    }));
+  }
   function groupForm() {
     const name = el("input", { type: "text", required: "", placeholder: "Nom du groupe" }), desc = el("input", { type: "text", placeholder: "Description" });
     const dyn = el("select", {}, el("option", { value: "" }, "Groupe classique (membres ajoutés à la main)"), el("option", { value: '{"active_days":90,"consent":"SMS"}' }, "⚡ Actifs 90 jours + consentement SMS"), el("option", { value: '{"joined_within_days":60}' }, "⚡ Arrivés dans les 60 derniers jours"), el("option", { value: '{"absent_since_days":30}' }, "⚡ Absents depuis 30 jours"), el("option", { value: '{"consent":"WHATSAPP"}' }, "⚡ Consentement WhatsApp"));

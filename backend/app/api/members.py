@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
@@ -10,6 +10,7 @@ from ..agents import BergerAgent, MembresAgent
 from ..db import get_db
 from ..models import Group, Member, User, utcnow
 from ..schemas import ConsentIn, GroupIn, MemberIn, MemberOut, MemberPatch, NoteIn
+from ..services import member_import
 from ..services import members as svc
 from .deps import anyone, pastor_only, staff
 
@@ -58,6 +59,42 @@ def create_member(body: MemberIn, db: Session = Depends(get_db), actor: User = D
     audit.log(db, actor.name, "MEMBER_CREATED", "member", str(m.id))
     db.commit()
     return _out(m)
+
+
+@router.post("/membres/import")
+async def import_members(
+    file: UploadFile = File(...),
+    dry_run: bool = Form(default=True),
+    group_id: int | None = Form(default=None),
+    format: str | None = Form(default=None),
+    db: Session = Depends(get_db),
+    actor: User = Depends(staff),
+):
+    """Import en masse depuis le répertoire du téléphone (vCard .vcf), un tableur (CSV)
+    ou une discussion de groupe WhatsApp exportée (.txt).
+
+    Deux temps : ``dry_run=true`` renvoie l'aperçu (contacts importables / ignorés et pourquoi),
+    ``dry_run=false`` crée les membres. Aucun consentement n'est enregistré à l'import."""
+    data = await file.read()
+    if not data:
+        raise HTTPException(400, "Fichier vide.")
+    if len(data) > 5 * 1024 * 1024:
+        raise HTTPException(413, "Fichier trop volumineux (5 Mo maximum).")
+    if format and format not in (member_import.FORMAT_VCARD, member_import.FORMAT_CSV, member_import.FORMAT_WHATSAPP):
+        raise HTTPException(400, "Format inconnu : vcard, csv ou whatsapp.")
+    result = member_import.prepare(db, file.filename or "", data, format or None)
+    if not result.contacts:
+        raise HTTPException(400, "Aucun contact reconnu dans ce fichier. Formats acceptés : vCard (.vcf), CSV, export de discussion WhatsApp (.txt).")
+    group = db.get(Group, group_id) if group_id else None
+    if group_id and group is None:
+        raise HTTPException(404, "Groupe introuvable.")
+    if group is not None and group.dynamic_rule:
+        raise HTTPException(400, "Un groupe dynamique se calcule automatiquement : choisissez un groupe classique.")
+    if dry_run:
+        return result.as_dict()
+    member_import.commit_import(db, result, actor.name, group)
+    db.commit()
+    return result.as_dict()
 
 
 @router.get("/membres/{member_id}")

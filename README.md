@@ -69,6 +69,18 @@ Sans clé API, l'analyse des demandes est déterministe (mots-clés français, d
 
 ---
 
+## Importer les membres sans les retaper
+
+Depuis la page **Membres → 📥 Importer**, trois fichiers sont acceptés, avec un aperçu avant toute création :
+
+| Source | Comment obtenir le fichier |
+|---|---|
+| **Répertoire iPhone / Mac / iCloud** (vCard `.vcf`) | iPhone : Contacts → maintenir un contact → « Sélectionner » → tout cocher → « Partager ». Mac : Contacts → ⌘A → Fichier → Exporter → « Exporter la vCard… ». iCloud : icloud.com/contacts → ⌘A → roue crantée → « Exporter la vCard ». |
+| **Tableur** (`.csv`, Excel / Numbers / Google Contacts) | Colonnes reconnues : Prénom, Nom, Téléphone, E-mail, Responsabilité (ou une colonne « Nom complet »). |
+| **Groupe WhatsApp** (`.txt`) | Ouvrir le groupe → nom du groupe → « Exporter la discussion » → « Sans médias ». Les participants enregistrés dans le téléphone arrivent avec leur nom, les autres avec leur numéro (nom provisoire « Contact », à corriger sur la fiche). |
+
+Les numéros sont normalisés au format international, les doublons (dans le fichier ou déjà en base) sont ignorés, les nouveaux arrivent dans le groupe « Membres » plus le groupe choisi, marqués « nouveau ». **Aucun consentement n'est déduit d'un import** : il se coche ensuite sur chaque fiche, avec date.
+
 ## La règle absolue, et comment elle est garantie
 
 ```
@@ -154,7 +166,7 @@ cd backend && python -m pytest -q
 
 ## Feuille de route
 
-Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, communication, intelligence, bureau complet). Pistes ultérieures : notifications push natives, appels automatisés, connecteur Google Calendar, import CSV des membres, chiffrement applicatif des coordonnées, interface multilingue.
+Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, communication, intelligence, bureau complet). Pistes ultérieures : notifications push natives, appels automatisés, connecteur Google Calendar, chiffrement applicatif des coordonnées, interface multilingue.
 
 ## Licence
 
