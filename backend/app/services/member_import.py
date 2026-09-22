@@ -83,6 +83,7 @@ class ImportResult:
     contacts: list[ImportedContact] = field(default_factory=list)
     created_ids: list[int] = field(default_factory=list)
     added_to_group_ids: list[int] = field(default_factory=list)
+    completed_ids: list[int] = field(default_factory=list)  # fiches existantes complétées (nom, e-mail, consentement)
 
     @property
     def importable(self) -> list[ImportedContact]:
@@ -106,7 +107,8 @@ class ImportResult:
             "ignores": len(self.contacts) - len(self.importable),
             "crees": len(self.created_ids),
             "ajoutes_au_groupe": len(self.added_to_group_ids),
-            "avec_consentement": sum(1 for c in self.to_create if c.consent),
+            "completes": len(self.completed_ids),
+            "avec_consentement": sum(1 for c in self.importable if c.consent),
             "contacts": [c.as_dict() for c in self.contacts],
         }
 
@@ -450,9 +452,29 @@ def commit_import(db: Session, result: ImportResult, actor: str, group: Group | 
             continue
         if c.existing_id is not None:
             m = db.get(Member, c.existing_id)
-            if m is not None and group is not None and not group.dynamic_rule and m not in group.members:
+            if m is None:
+                continue
+            if group is not None and not group.dynamic_rule and m not in group.members:
                 group.members.append(m)
                 result.added_to_group_ids.append(m.id)
+            # Compléter une fiche existante avec ce que le fichier apporte de plus
+            completed = False
+            if m.first_name == "Contact" and c.first_name and c.first_name != "Contact":
+                m.first_name, m.last_name = c.first_name, c.last_name
+                completed = True
+            if not m.email and c.email:
+                m.email = c.email
+                completed = True
+            if not m.phone and c.phone:
+                m.phone = c.phone
+                completed = True
+            if apply_consent and c.consent and not (m.consent_sms or m.consent_whatsapp or m.consent_email):
+                record_consent(db, m, sms=bool(m.phone), whatsapp=bool(m.phone), email=bool(m.email), actor=actor)
+                if c.joined_at:
+                    m.consent_recorded_at = c.joined_at
+                completed = True
+            if completed:
+                result.completed_ids.append(m.id)
             continue
         m = Member(first_name=c.first_name or "Contact", last_name=c.last_name, phone=c.phone, email=c.email, responsibility=c.responsibility, is_new=mark_new, joined_at=c.joined_at or (utcnow() if mark_new else None), preferred_channel="EMAIL" if (c.email and not c.phone) else "SMS", admin_notes=f"Importé ({result.format}) — {c.source}" if c.source else f"Importé ({result.format})")
         if all_members is not None and not all_members.dynamic_rule:
@@ -466,5 +488,5 @@ def commit_import(db: Session, result: ImportResult, actor: str, group: Group | 
             record_consent(db, m, sms=bool(c.phone), whatsapp=bool(c.phone), email=bool(c.email), actor=actor)
             if c.joined_at:
                 m.consent_recorded_at = c.joined_at  # date de la réponse au formulaire
-    audit.log(db, actor, "MEMBERS_IMPORTED", "member", "bulk", {"format": result.format, "created": len(result.created_ids), "added_to_group": len(result.added_to_group_ids), "skipped": len(result.contacts) - len(result.created_ids) - len(result.added_to_group_ids), "group": group.slug if group else None})
+    audit.log(db, actor, "MEMBERS_IMPORTED", "member", "bulk", {"format": result.format, "created": len(result.created_ids), "added_to_group": len(result.added_to_group_ids), "completed": len(result.completed_ids), "skipped": len(result.contacts) - len(result.created_ids) - len(result.added_to_group_ids), "group": group.slug if group else None})
     return result

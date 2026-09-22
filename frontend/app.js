@@ -333,7 +333,7 @@
             el("td", { class: "mono" }, c.telephone || "—"), el("td", { class: "small" }, c.email || "—"),
             el("td", { class: "small" }, c.probleme || ACTION_FR[c.action] || "", c.consentement && c.importable ? " · consentement ✓" : "")))))));
       consentRow.classList.toggle("hidden", !r.avec_consentement);
-      consentRow.lastChild.textContent = ` Enregistrer le consentement (SMS, WhatsApp, e-mail) des ${r.avec_consentement} contact(s) ayant répondu « Oui » à la question de consentement du formulaire, avec la date de leur réponse`;
+      consentRow.lastChild.textContent = ` Enregistrer le consentement (SMS, WhatsApp, e-mail) des ${r.avec_consentement} contact(s) ayant répondu « Oui » à la question de consentement du formulaire, avec la date de leur réponse (y compris les membres déjà créés qui n'ont encore aucun consentement)`;
       refreshCount();
     });
     file.addEventListener("change", analyse);
@@ -353,7 +353,7 @@
       const r = await send(false);
       if (!r) { confirmBtn.disabled = false; return; }
       state.groups = await api("/groupes");
-      toast(`${r.crees} membre(s) créé(s)` + (r.ajoutes_au_groupe ? `, ${r.ajoutes_au_groupe} ajouté(s) au groupe` : "") + `, ${r.ignores} ignoré(s).`);
+      toast(`${r.crees} membre(s) créé(s)` + (r.ajoutes_au_groupe ? `, ${r.ajoutes_au_groupe} ajouté(s) au groupe` : "") + (r.completes ? `, ${r.completes} fiche(s) complétée(s)` : "") + `, ${r.ignores} ignoré(s).`);
       m.close(); router();
     }));
   }

@@ -285,3 +285,26 @@ def test_api_apply_consent_only_when_requested(client):
     assert aaron["consent_sms"] and aaron["consent_whatsapp"] and aaron["consent_email"]
     card = client.get(f"/api/membres/{aaron['id']}", headers=h).json()
     assert card["consentement"]["enregistre_le"].startswith("2024-11-03") and "3 novembre" in card["date_arrivee"]
+
+
+def test_reimport_completes_existing_members(client):
+    """Ré-importer un fichier complète les fiches déjà créées : consentement (si demandé), nom d'un « Contact +33… », e-mail manquant."""
+    h = login(client)
+    # 1. Numéros WhatsApp d'abord : fiches « Contact +33… » sans nom
+    files = {"file": ("chat.txt", io.BytesIO(WHATSAPP_ANDROID.encode()), "text/plain")}
+    assert client.post("/api/membres/import", files=files, data={"dry_run": "false"}, headers=h).json()["crees"] == 2
+    # 2. Formulaire importé sans consentement
+    form = FORM_CSV + "20/09/2026 12:00:00,Paul,Martin,paul@example.org,rue,06 98 76 54 32,Oui\n"
+    files = {"file": ("form.csv", io.BytesIO(form.encode()), "text/csv")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false"}, headers=h).json()
+    assert r["crees"] == 5 and r["completes"] == 1  # Paul : le « Contact +33698765432 » prend son nom et son e-mail
+    paul = client.get("/api/membres?q=Martin", headers=h).json()[0]
+    assert paul["first_name"] == "Paul" and paul["phone"] == "+33698765432" and paul["email"] == "paul@example.org" and not paul["consent_sms"]
+    # 3. Même fichier, consentement coché cette fois : appliqué aux membres existants sans consentement
+    files = {"file": ("form.csv", io.BytesIO(form.encode()), "text/csv")}
+    r = client.post("/api/membres/import", files=files, data={"dry_run": "false", "apply_consent": "true"}, headers=h).json()
+    assert r["crees"] == 0 and r["completes"] == 4  # Jovie, Kethia, Aaron, Paul (Mathys a répondu Non)
+    paul = client.get("/api/membres?q=Martin", headers=h).json()[0]
+    assert paul["consent_sms"] and paul["consent_email"]
+    mathys = client.get("/api/membres?q=Vanitou", headers=h).json()[0]
+    assert not mathys["consent_sms"]
