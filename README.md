@@ -17,6 +17,16 @@ Ce dépôt contient une **application complète et fonctionnelle**, pas une maqu
 
 ## Démarrage en 3 minutes
 
+Sur Mac ou Linux, une seule commande suffit :
+
+```bash
+git clone https://github.com/andyubatelo01-cloud/Ubatelo-Andy.git
+cd Ubatelo-Andy
+./demarrer.sh
+```
+
+À la main :
+
 ```bash
 git clone https://github.com/andyubatelo01-cloud/Ubatelo-Andy.git
 cd Ubatelo-Andy
