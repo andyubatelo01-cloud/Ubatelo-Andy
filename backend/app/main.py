@@ -73,6 +73,14 @@ def create_app() -> FastAPI:
     if FRONTEND.exists():
         app.mount("/static", StaticFiles(directory=FRONTEND), name="static")
 
+        @app.middleware("http")
+        async def _no_cache_static(request: Request, call_next):
+            # Les fichiers de l'interface sont toujours revalidés : un changement de thème est visible immédiatement.
+            response = await call_next(request)
+            if request.url.path.startswith("/static/") or request.url.path in ("/", "/index.html"):
+                response.headers["Cache-Control"] = "no-cache"
+            return response
+
         @app.get("/", include_in_schema=False)
         @app.get("/{path:path}", include_in_schema=False)
         def spa(path: str = ""):
