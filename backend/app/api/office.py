@@ -8,11 +8,11 @@ from sqlalchemy.orm import Session
 from .. import audit
 from ..agents import AGENT_ROSTER, AnalyticsAgent, DirecteurAgent, SarahAgent
 from ..agents.llm import get_provider
-from ..channels import registry_status
+from ..channels import OutboundMessage, channel_diagnostics, explain_send_error, get_gateway
 from ..config import get_settings
 from ..db import get_db
-from ..models import AgentRun, AuditLog, Automation, Notification, Task, TaskStatus, User
-from ..schemas import AutomationIn, CommandIn, TaskIn
+from ..models import AgentRun, AuditLog, Automation, Channel, Notification, Task, TaskStatus, User
+from ..schemas import AutomationIn, CommandIn, TaskIn, TestSendIn
 from ..services import scheduling
 from ..services.briefing import daily_briefing, sunday_preparation
 from .deps import anyone, pastor_only, staff
@@ -181,9 +181,30 @@ def settings(db: Session = Depends(get_db), _: User = Depends(anyone)):
     return {
         "application": s.app_name, "environnement": s.app_env, "fuseau": s.timezone, "url": s.base_url,
         "ia": {"fournisseur": get_provider().name, "modele": s.llm_model if get_provider().name != "template" else None},
-        "canaux": registry_status(),
+        "canaux": channel_diagnostics(),
+        "telephone_pasteur": s.pastor_phone,
         "validation": {"seuil_double_validation": s.double_confirmation_threshold, "duree_lien_heures": s.approval_link_ttl_hours, "phrase_confirmation": "CONFIRMER L'ENVOI"},
         "planificateur": {"actif": s.scheduler_enabled, "intervalle_s": s.scheduler_interval_seconds, "heure_briefing": s.daily_briefing_hour},
         "cout_sms_eur": s.sms_unit_cost_eur,
         "rgpd": {"consentement_par_canal": True, "desinscription_stop": True, "export": True, "effacement": True, "journal_audit": True, "roles": ["PASTEUR", "SECRETAIRE", "LECTEUR"], "entrainement_ia_sur_donnees_membres": False},
     }
+
+
+@router.post("/parametres/test-envoi")
+def test_send(body: TestSendIn, db: Session = Depends(get_db), actor: User = Depends(pastor_only)):
+    """Envoie un message de test sur un canal (rôle PASTEUR) et renvoie le résultat brut du fournisseur
+    avec un conseil. Ne passe pas par une campagne : sert uniquement à vérifier la configuration."""
+    channel = body.channel.upper()
+    if channel not in (Channel.SMS.value, Channel.WHATSAPP.value, Channel.EMAIL.value):
+        raise HTTPException(400, "Canal inconnu : SMS, WHATSAPP ou EMAIL.")
+    s = get_settings()
+    to = (body.to or "").strip() or (actor.email if channel == Channel.EMAIL.value else s.pastor_phone)
+    if not to:
+        raise HTTPException(400, "Aucun destinataire : indiquez un numéro (ou renseignez PASTOR_PHONE dans .env).")
+    gw = get_gateway(channel)
+    text = body.message or f"Test du Bureau du Pasteur ({s.app_name}) : ce canal fonctionne."
+    result = gw.send(OutboundMessage(channel=channel, to=to, body=text, subject=f"Test {s.app_name}", metadata={"kind": "test"}))
+    audit.log(db, actor.name, "TEST_MESSAGE_SENT", "channel", channel, {"provider": gw.name, "ok": result.ok, "error": result.error[:200]})
+    db.commit()
+    advice = explain_send_error(result.error) if not result.ok else ("Mode démonstration : le message a été journalisé mais rien n'a été envoyé. Configurez le fournisseur dans .env pour un envoi réel." if gw.name == "console" else "Envoi accepté par le fournisseur. Le message doit arriver dans quelques secondes.")
+    return {"canal": channel, "fournisseur": gw.name, "live": gw.name != "console", "destinataire": to, "ok": result.ok, "erreur": result.error, "identifiant": result.provider_id, "conseil": advice}

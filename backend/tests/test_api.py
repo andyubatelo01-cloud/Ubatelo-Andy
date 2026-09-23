@@ -186,3 +186,27 @@ def test_automation_endpoints(client):
     assert a["validation_requise"] is True and "dimanche" in a["description"]
     assert client.patch(f"/api/automatisations/{a['id']}", params={"is_active": False}, headers=h).json()["active"] is False
     assert client.get("/api/parametres", headers=h).json()["validation"]["phrase_confirmation"] == "CONFIRMER L'ENVOI"
+
+
+def test_channel_diagnostics_and_test_send(client):
+    from app.channels import explain_send_error
+
+    h, hs = login(client), login(client, "sarah@test.org")
+    p = client.get("/api/parametres", headers=h).json()
+    sms = next(c for c in p["canaux"] if c["channel"] == "SMS")
+    assert sms["provider"] == "console" and sms["live"] is False and "démonstration" in sms["conseil"]
+    assert p["telephone_pasteur"] == "+33600000099"
+    # Test d'envoi : réservé au pasteur ; en console, simulé et journalisé
+    assert client.post("/api/parametres/test-envoi", json={"channel": "SMS"}, headers=hs).status_code == 403
+    r = client.post("/api/parametres/test-envoi", json={"channel": "SMS"}, headers=h)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["ok"] and body["fournisseur"] == "console" and body["destinataire"] == "+33600000099" and "démonstration" in body["conseil"]
+    assert console().sent[-1].metadata["kind"] == "test"
+    r = client.post("/api/parametres/test-envoi", json={"channel": "EMAIL", "to": "moi@test.org"}, headers=h).json()
+    assert r["destinataire"] == "moi@test.org"
+    assert client.post("/api/parametres/test-envoi", json={"channel": "PIGEON"}, headers=h).status_code == 400
+    # Conseils sur les erreurs fournisseur
+    assert "vérifié" in explain_send_error("Twilio 400 : The number +33... is unverified. Error 21608")
+    assert "TWILIO_AUTH_TOKEN" in explain_send_error("Twilio 401 : Authenticate (20003)")
+    assert "mot de passe d'application" in explain_send_error("Erreur SMTP : (535, b'Username and Password not accepted')")

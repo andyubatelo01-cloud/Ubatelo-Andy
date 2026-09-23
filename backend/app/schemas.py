@@ -83,6 +83,12 @@ class MemberOut(BaseModel):
     groups: list[str]
 
 
+class TestSendIn(BaseModel):
+    channel: str = "SMS"
+    to: str = ""
+    message: str = ""
+
+
 class MemberIdsIn(BaseModel):
     member_ids: list[int] = Field(min_length=1, max_length=500)
 

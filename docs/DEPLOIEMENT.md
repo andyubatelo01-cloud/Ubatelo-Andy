@@ -42,6 +42,12 @@ Pour un autre fournisseur SMS, implémentez une `ChannelGateway` (voir `ARCHITEC
 
 `EMAIL_PROVIDER=smtp` avec `SMTP_HOST`, `SMTP_PORT` (STARTTLS), `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`.
 
+Avec une adresse Gmail : `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_USER` = l'adresse Gmail, `SMTP_PASSWORD` = un **mot de passe d'application** (compte Google → Sécurité → validation en deux étapes → mots de passe des applications), `SMTP_FROM` = la même adresse.
+
+## Vérifier un canal
+
+Page **Paramètres → Canaux** : chaque canal indique le fournisseur demandé, le fournisseur effectif, les variables manquantes et un conseil. Le bouton **Envoyer un test** (rôle PASTEUR) envoie un message vers le numéro du pasteur (ou une adresse saisie) et affiche l'erreur exacte du fournisseur, traduite en conseil (compte Twilio d'essai, jeton refusé, mot de passe Gmail, etc.). `POST /api/parametres/test-envoi`.
+
 ## IA
 
 `LLM_PROVIDER=anthropic` et `ANTHROPIC_API_KEY` ; modèle par défaut `claude-opus-5`. Sans clé, le système fonctionne intégralement avec les gabarits.
