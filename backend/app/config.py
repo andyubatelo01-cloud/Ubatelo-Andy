@@ -8,11 +8,14 @@ from __future__ import annotations
 from functools import lru_cache
 
 from pydantic import Field
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    # Le fichier .env vit à la racine du dépôt ; on l'accepte aussi dans le dossier courant (Docker, tests).
+    model_config = SettingsConfigDict(env_file=(str(Path(__file__).resolve().parents[2] / ".env"), ".env"), env_file_encoding="utf-8", extra="ignore")
 
     # Général
     app_name: str = "Bureau du Pasteur"

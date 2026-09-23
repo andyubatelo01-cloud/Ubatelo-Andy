@@ -98,7 +98,7 @@ Documentation OpenAPI générée : `/api/docs`. Principales routes :
 | Domaine | Routes |
 |---|---|
 | Auth | `POST /api/auth/login`, `GET /api/auth/me`, `GET/POST/DELETE /api/auth/users` |
-| Membres | `GET/POST /api/membres`, `GET/PATCH/DELETE /api/membres/{id}`, `/notes`, `/consentement`, `/desinscription`, `/export`, `/message` |
+| Membres | `GET/POST /api/membres`, `POST /api/membres/import` (vCard, CSV, export WhatsApp ; `dry_run` pour l'aperçu), `POST /api/membres/suppression` (lot, rôle PASTEUR), `GET/PATCH/DELETE /api/membres/{id}`, `/notes`, `/consentement`, `/desinscription`, `/export`, `/message` |
 | Groupes | `GET/POST /api/groupes`, `GET/DELETE /api/groupes/{id}`, `POST/DELETE /api/groupes/{id}/membres/{mid}` |
 | Suivi | `GET /api/suivi`, `POST /api/suivi/relance` |
 | Événements | `GET/POST /api/evenements`, `GET/PATCH/DELETE /api/evenements/{id}`, `/planifier`, `/presences`, `/compte-rendu` |

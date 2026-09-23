@@ -5,7 +5,7 @@
 | Rôle | Peut |
 |---|---|
 | `PASTEUR` | tout, et **seul** à valider / confirmer un envoi, créer des comptes, gérer les automatisations, effacer un membre |
-| `SECRETAIRE` | créer et modifier membres, groupes, événements, campagnes ; consulter l'audit ; exporter les données d'un membre |
+| `SECRETAIRE` | créer, importer (vCard, CSV, WhatsApp) et modifier membres, groupes, événements, campagnes ; consulter l'audit ; exporter les données d'un membre |
 | `LECTEUR` | consulter |
 
 Sessions : jeton HMAC-SHA256 signé avec `SECRET_KEY`, 12 h. Mots de passe : PBKDF2-HMAC-SHA256, 200 000 itérations, sel aléatoire.
@@ -22,6 +22,8 @@ Sessions : jeton HMAC-SHA256 signé avec `SECRET_KEY`, 12 h. Mots de passe : PBK
 
 La fiche membre ne contient que : identité, coordonnées, groupe, responsabilité, date d'arrivée, anniversaire (jour et mois seulement), préférences et consentements, statut, participations factuelles, notes administratives autorisées. Aucun champ ne stocke d'état spirituel, émotionnel ou médical, et les agents ne l'infèrent jamais.
 
+Un import de membres (répertoire, tableur, groupe WhatsApp) ne crée **jamais** de consentement : les fiches importées arrivent sans consentement et l'import est journalisé (`MEMBERS_IMPORTED`).
+
 Les agents IA ne reçoivent **jamais** la liste des membres ni leurs coordonnées : seulement l'événement, le style, le canal, l'étiquette du public et la demande du pasteur. Les données ne servent à l'entraînement d'aucun modèle.
 
 ## Droits des personnes
@@ -30,7 +32,7 @@ Les agents IA ne reçoivent **jamais** la liste des membres ni leurs coordonnée
 |---|---|
 | Accès / portabilité | `GET /api/membres/{id}/export` (JSON complet, journalisé) |
 | Rectification | `PATCH /api/membres/{id}` |
-| Effacement | `DELETE /api/membres/{id}` (rôle PASTEUR) : anonymisation irréversible, notes supprimées, retrait des groupes, statistiques agrégées conservées |
+| Effacement | `DELETE /api/membres/{id}` (rôle PASTEUR) : anonymisation irréversible, notes supprimées, retrait des groupes, statistiques agrégées conservées. `POST /api/membres/suppression` (lot, rôle PASTEUR) : une fiche sans aucun historique (jamais contactée, aucune participation) est supprimée définitivement, sinon anonymisée |
 | Opposition | désinscription par canal, `STOP` |
 
 ## Journalisation

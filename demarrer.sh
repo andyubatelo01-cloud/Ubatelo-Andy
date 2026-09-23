@@ -30,7 +30,11 @@ if [ ! -f ../.env ]; then
   cp ../.env.example ../.env
   echo "▶ Fichier .env créé à partir de .env.example (mode démonstration, aucun envoi réel)."
 fi
-export $(grep -v '^#' ../.env | grep -v '^\s*$' | xargs) 2>/dev/null || true
+# Lecture d'une valeur du .env (l'application lit elle-même le fichier ; ici seulement pour l'affichage)
+env_get() { grep -E "^$1=" ../.env | tail -1 | sed -E "s/^$1=//; s/[[:space:]]+#.*$//; s/^\"(.*)\"$/\\1/; s/[[:space:]]+$//"; }
+ADMIN_EMAIL="$(env_get ADMIN_EMAIL)"
+ADMIN_PASSWORD="$(env_get ADMIN_PASSWORD)"
+SMS_PROVIDER="$(env_get SMS_PROVIDER)"
 
 if [ ! -f data/bureau.db ]; then
   echo "▶ Chargement des données de démonstration…"
@@ -40,6 +44,7 @@ fi
 echo
 echo "✅ Bureau du Pasteur démarre sur http://localhost:8000"
 echo "   Identifiants : ${ADMIN_EMAIL:-pasteur@exemple.org} / ${ADMIN_PASSWORD:-changez-moi}"
+echo "   Canal SMS : ${SMS_PROVIDER:-console}$([ "${SMS_PROVIDER:-console}" = "console" ] && echo " (mode démonstration, aucun envoi réel)")"
 echo "   Arrêt : Ctrl + C"
 echo
 ( sleep 2 && (command -v open >/dev/null && open http://localhost:8000 || true) ) &

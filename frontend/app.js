@@ -278,18 +278,115 @@
   // ───────────────────────── Membres ─────────────────────────
   routes.membres = async (arg) => {
     if (arg) { openMemberCard(Number(arg)); }
+    const isPastor = state.user.role === "PASTEUR";
     const q = el("input", { type: "text", placeholder: "Rechercher (nom, téléphone, e-mail)…" });
     const groupSel = el("select", {}, el("option", { value: "" }, "Tous les groupes"), ...state.groups.map((g) => el("option", { value: g.id }, `${g.nom} (${g.effectif})`)));
     const tableWrap = el("div", { class: "card table-wrap" });
+    const selected = new Set();
+    const actionBar = el("div", { class: "btn-row hidden", style: "margin:0 0 8px" });
+    const refreshBar = () => {
+      actionBar.classList.toggle("hidden", selected.size === 0);
+      actionBar.replaceChildren(el("strong", {}, `${selected.size} sélectionné(s)`),
+        el("button", { class: "btn sm danger", type: "button", onclick: () => deleteSelected() }, `🗑️ Supprimer ${selected.size} fiche(s)`),
+        el("button", { class: "btn sm", type: "button", onclick: () => { selected.clear(); load(); } }, "Annuler la sélection"));
+    };
+    const deleteSelected = () => safe(async () => {
+      const ids = [...selected];
+      if (!confirm(`Supprimer ${ids.length} fiche(s) ?\n\nUne fiche jamais contactée et sans participation est supprimée définitivement (mauvaise entrée, doublon d'import). Une fiche avec un historique est anonymisée (RGPD).`)) return;
+      const r = await api("/membres/suppression", { method: "POST", body: { member_ids: ids } });
+      selected.clear();
+      state.groups = await api("/groupes");
+      toast(`${r.supprimes} supprimée(s), ${r.anonymises} anonymisée(s)` + (r.introuvables ? `, ${r.introuvables} introuvable(s)` : "") + ".");
+      router();
+    });
     const load = async () => {
       const list = await api(`/membres?q=${encodeURIComponent(q.value)}${groupSel.value ? "&group_id=" + groupSel.value : ""}`);
-      tableWrap.replaceChildren(el("div", { class: "muted small", style: "margin-bottom:6px" }, `${list.length} membre(s)`), el("table", {}, el("thead", {}, el("tr", {}, ...["Nom", "Téléphone", "Groupes", "Consentements", "Statut"].map((h) => el("th", {}, h)))), el("tbody", {}, ...list.map((m) => el("tr", { class: "clickable", onclick: () => openMemberCard(m.id) }, el("td", {}, el("strong", {}, `${m.first_name} ${m.last_name}`), m.is_new ? el("span", { class: "badge A_TRAITER", style: "margin-left:6px" }, "nouveau") : "", m.responsibility ? el("div", { class: "muted small" }, m.responsibility) : ""), el("td", { class: "mono" }, m.phone || "—"), el("td", { class: "small" }, m.groups.join(", ")), el("td", { class: "small" }, [m.consent_sms && "SMS", m.consent_whatsapp && "WhatsApp", m.consent_email && "E-mail"].filter(Boolean).join(" + ") || el("span", { class: "muted" }, "aucun")), el("td", {}, m.unsubscribed ? el("span", { class: "badge CANCELLED" }, "désinscrit") : el("span", { class: "badge " + (m.is_active ? "SENT" : "DRAFT") }, m.is_active ? "Actif" : "Inactif")))))));
+      const visibleIds = list.map((m) => m.id);
+      const allBox = el("input", { type: "checkbox", title: "Sélectionner toute la liste affichée", onchange: (e) => { visibleIds.forEach((id) => (e.target.checked ? selected.add(id) : selected.delete(id))); load(); } });
+      if (visibleIds.length && visibleIds.every((id) => selected.has(id))) allBox.checked = true;
+      const rowBox = (m) => el("input", { type: "checkbox", checked: selected.has(m.id) ? "" : null, onclick: (e) => e.stopPropagation(), onchange: (e) => { e.target.checked ? selected.add(m.id) : selected.delete(m.id); refreshBar(); } });
+      refreshBar();
+      tableWrap.replaceChildren(el("div", { class: "muted small", style: "margin-bottom:6px" }, `${list.length} membre(s)`, isPastor ? " · cochez des fiches pour les supprimer en lot" : ""), actionBar,
+        el("table", {}, el("thead", {}, el("tr", {}, isPastor ? el("th", { style: "width:32px" }, allBox) : null, ...["Nom", "Téléphone", "Groupes", "Consentements", "Statut"].map((h) => el("th", {}, h)))),
+          el("tbody", {}, ...list.map((m) => el("tr", { class: "clickable", onclick: () => openMemberCard(m.id) },
+            isPastor ? el("td", { onclick: (e) => e.stopPropagation() }, rowBox(m)) : null,
+            el("td", {}, el("strong", {}, `${m.first_name} ${m.last_name}`), m.is_new ? el("span", { class: "badge A_TRAITER", style: "margin-left:6px" }, "nouveau") : "", m.responsibility ? el("div", { class: "muted small" }, m.responsibility) : ""),
+            el("td", { class: "mono" }, m.phone || "—"), el("td", { class: "small" }, m.groups.join(", ")),
+            el("td", { class: "small" }, [m.consent_sms && "SMS", m.consent_whatsapp && "WhatsApp", m.consent_email && "E-mail"].filter(Boolean).join(" + ") || el("span", { class: "muted" }, "aucun")),
+            el("td", {}, m.unsubscribed ? el("span", { class: "badge CANCELLED" }, "désinscrit") : el("span", { class: "badge " + (m.is_active ? "SENT" : "DRAFT") }, m.is_active ? "Actif" : "Inactif")))))));
     };
     q.addEventListener("input", () => load()); groupSel.addEventListener("change", load); load();
     const groupsCard = el("div", { class: "card" }, el("h2", {}, "Groupes"), el("div", { class: "chips" }, ...state.groups.map((g) => el("span", { class: "chip", onclick: () => openGroup(g.id) }, `${g.dynamique ? "⚡ " : ""}${g.nom} · ${g.effectif}`))),
       el("details", { style: "margin-top:10px" }, el("summary", {}, "➕ Créer un groupe"), groupForm()));
-    return el("div", {}, el("div", { class: "card" }, el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Recherche", q), el("label", { class: "field" }, "Groupe", groupSel), el("button", { class: "btn primary", type: "button", onclick: () => memberForm() }, "➕ Nouveau membre"))), tableWrap, groupsCard);
+    return el("div", {}, el("div", { class: "card" }, el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Recherche", q), el("label", { class: "field" }, "Groupe", groupSel), el("button", { class: "btn primary", type: "button", onclick: () => memberForm() }, "➕ Nouveau membre"), el("button", { class: "btn", type: "button", onclick: () => importMembers() }, "📥 Importer (iPhone, CSV, WhatsApp)"))), tableWrap, groupsCard);
   };
+  function importMembers() {
+    const file = el("input", { type: "file", accept: ".vcf,.csv,.tsv,.txt,text/vcard,text/csv,text/plain" });
+    const groupSel = el("select", {}, el("option", { value: "" }, "Aucun groupe particulier (seulement « Membres »)"), ...state.groups.filter((g) => !g.dynamique && g.nom !== "Membres").map((g) => el("option", { value: g.id }, g.nom)));
+    const preview = el("div", {});
+    const confirmBtn = el("button", { class: "btn primary", type: "button", disabled: "" }, "Importer");
+    const consentBox = el("input", { type: "checkbox" });
+    const consentRow = el("label", { class: "check hidden" }, consentBox, "");
+    const send = async (dryRun) => {
+      if (!file.files[0]) { toast("Choisissez d'abord un fichier.", true); return null; }
+      const fd = new FormData();
+      fd.append("file", file.files[0]);
+      fd.append("dry_run", dryRun ? "true" : "false");
+      if (groupSel.value) fd.append("group_id", groupSel.value);
+      if (!dryRun) fd.append("skip", [...preview.querySelectorAll("input[data-idx]:not(:checked)")].map((i) => i.dataset.idx).join(","));
+      if (!dryRun && consentBox.checked) fd.append("apply_consent", "true");
+      const res = await fetch("/api/membres/import", { method: "POST", headers: { Authorization: "Bearer " + state.token }, body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : `Erreur ${res.status}`);
+      return data;
+    };
+    const FORMAT_FR = { vcard: "répertoire (vCard)", csv: "tableur (CSV)", whatsapp: "discussion WhatsApp" };
+    const ACTION_FR = { creer: "nouveau membre", ajouter_au_groupe: "déjà membre : ajout au groupe", ignorer: "" };
+    const refreshCount = () => {
+      const kept = [...preview.querySelectorAll("input[data-idx]")].filter((b) => b.checked).length;
+      confirmBtn.disabled = kept === 0;
+      confirmBtn.textContent = `Importer ${kept} contact(s)`;
+    };
+    const setAll = (v) => { preview.querySelectorAll("input[data-idx]").forEach((b) => { b.checked = v; }); refreshCount(); };
+    const analyse = () => safe(async () => {
+      const r = await send(true);
+      if (!r) return;
+      const groupName = groupSel.value ? groupSel.options[groupSel.selectedIndex].text : "";
+      preview.replaceChildren(
+        el("p", { class: "small" }, `Format détecté : ${FORMAT_FR[r.format] || r.format} · ${r.total} contact(s) trouvé(s) · `, el("strong", {}, `${r.nouveaux} nouveau(x)`), ` · ${r.existants} déjà membre(s)`, groupName ? ` (seront ajoutés à « ${groupName} »)` : "", ` · ${r.ignores} ignoré(s)`),
+        consentRow,
+        el("div", { class: "btn-row", style: "margin-bottom:6px" }, el("button", { class: "btn sm", type: "button", onclick: () => setAll(true) }, "Tout cocher"), el("button", { class: "btn sm", type: "button", onclick: () => setAll(false) }, "Tout décocher"), el("span", { class: "muted small" }, "Décochez les contacts qui ne font pas partie de la communauté.")),
+        el("div", { class: "table-wrap" }, el("table", {}, el("thead", {}, el("tr", {}, ...["", "Nom", "Téléphone", "E-mail", "Remarque"].map((h) => el("th", {}, h)))),
+          el("tbody", {}, ...r.contacts.map((c, idx) => el("tr", { style: c.importable ? "" : "opacity:.55" },
+            el("td", {}, c.importable ? el("input", { type: "checkbox", checked: "", "data-idx": idx, onchange: refreshCount }) : "⏭️"),
+            el("td", {}, `${c.prenom} ${c.nom}`.trim() || "—", c.source && c.source !== `${c.prenom} ${c.nom}`.trim() ? el("div", { class: "muted small" }, c.source) : ""),
+            el("td", { class: "mono" }, c.telephone || "—"), el("td", { class: "small" }, c.email || "—"),
+            el("td", { class: "small" }, c.probleme || ACTION_FR[c.action] || "", c.consentement && c.importable ? " · consentement ✓" : "")))))));
+      consentRow.classList.toggle("hidden", !r.avec_consentement);
+      consentRow.lastChild.textContent = ` Enregistrer le consentement (SMS, WhatsApp, e-mail) des ${r.avec_consentement} contact(s) ayant répondu « Oui » à la question de consentement du formulaire, avec la date de leur réponse (y compris les membres déjà créés qui n'ont encore aucun consentement)`;
+      refreshCount();
+    });
+    file.addEventListener("change", analyse);
+    const m = modal("📥 Importer des membres", el("div", {},
+      el("p", { class: "muted small" }, "Fichiers acceptés : répertoire iPhone / Mac / Google exporté en vCard (.vcf), tableau CSV (Prénom, Nom, Téléphone, E-mail), ou discussion de groupe WhatsApp exportée (.txt). Les doublons sont ignorés automatiquement. Aucun consentement n'est déduit d'un import : il se coche ensuite sur chaque fiche."),
+      el("details", { class: "small", style: "margin-bottom:10px" }, el("summary", {}, "Comment récupérer le fichier ?"),
+        el("ul", {}, el("li", {}, el("strong", {}, "iPhone : "), "Contacts → ouvrez une liste (ou « Tous les contacts ») → maintenez un contact appuyé → « Sélectionner » → cochez tout → « Partager » → enregistrez le .vcf dans Fichiers ou envoyez-le-vous par e-mail/AirDrop."),
+          el("li", {}, el("strong", {}, "Mac : "), "app Contacts → sélectionnez les contacts (⌘A pour tout) → Fichier → Exporter → « Exporter la vCard… »."),
+          el("li", {}, el("strong", {}, "iCloud : "), "icloud.com/contacts → ⌘A → roue crantée → « Exporter la vCard »."),
+          el("li", {}, el("strong", {}, "Groupe WhatsApp : "), "ouvrez le groupe → nom du groupe → tout en bas « Exporter la discussion » → « Sans médias » → enregistrez le .txt. Les participants enregistrés dans votre téléphone arrivent avec leur nom (importez d'abord votre répertoire pour qu'ils soient retrouvés et ajoutés au groupe), les autres avec leur numéro."))),
+      el("form", { class: "inline", onsubmit: (e) => e.preventDefault() }, el("label", { class: "field" }, "Fichier", file), el("label", { class: "field" }, "Ajouter aussi au groupe", groupSel)),
+      preview,
+      el("div", { class: "btn-row" }, confirmBtn, el("button", { class: "btn", type: "button", onclick: () => m.close() }, "Annuler"))), { wide: true });
+    groupSel.addEventListener("change", () => { if (file.files[0]) analyse(); });
+    confirmBtn.addEventListener("click", () => safe(async () => {
+      confirmBtn.disabled = true;
+      const r = await send(false);
+      if (!r) { confirmBtn.disabled = false; return; }
+      state.groups = await api("/groupes");
+      toast(`${r.crees} membre(s) créé(s)` + (r.ajoutes_au_groupe ? `, ${r.ajoutes_au_groupe} ajouté(s) au groupe` : "") + (r.completes ? `, ${r.completes} fiche(s) complétée(s)` : "") + `, ${r.ignores} ignoré(s).`);
+      m.close(); router();
+    }));
+  }
   function groupForm() {
     const name = el("input", { type: "text", required: "", placeholder: "Nom du groupe" }), desc = el("input", { type: "text", placeholder: "Description" });
     const dyn = el("select", {}, el("option", { value: "" }, "Groupe classique (membres ajoutés à la main)"), el("option", { value: '{"active_days":90,"consent":"SMS"}' }, "⚡ Actifs 90 jours + consentement SMS"), el("option", { value: '{"joined_within_days":60}' }, "⚡ Arrivés dans les 60 derniers jours"), el("option", { value: '{"absent_since_days":30}' }, "⚡ Absents depuis 30 jours"), el("option", { value: '{"consent":"WHATSAPP"}' }, "⚡ Consentement WhatsApp"));

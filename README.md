@@ -69,6 +69,18 @@ Sans clé API, l'analyse des demandes est déterministe (mots-clés français, d
 
 ---
 
+## Importer les membres sans les retaper
+
+Depuis la page **Membres → 📥 Importer**, trois fichiers sont acceptés, avec un aperçu avant toute création :
+
+| Source | Comment obtenir le fichier |
+|---|---|
+| **Répertoire iPhone / Mac / iCloud** (vCard `.vcf`) | iPhone : Contacts → maintenir un contact → « Sélectionner » → tout cocher → « Partager ». Mac : Contacts → ⌘A → Fichier → Exporter → « Exporter la vCard… ». iCloud : icloud.com/contacts → ⌘A → roue crantée → « Exporter la vCard ». |
+| **Tableur** (`.csv`, Excel / Numbers / Google Forms / Google Contacts) | Colonnes reconnues : Prénom, Nom, Téléphone (ou « Tel. portable »), E-mail, Responsabilité, Horodateur / Date d'arrivée, et une colonne de consentement (« Acceptez-vous que vos données… », « Consentement »). Les « Oui » de cette colonne peuvent être enregistrés comme consentement, à la date de la réponse, en cochant l'option dans l'aperçu. |
+| **Groupe WhatsApp** (`.txt`) | Ouvrir le groupe → nom du groupe → « Exporter la discussion » → « Sans médias ». Les participants enregistrés dans le téléphone arrivent avec leur nom, les autres avec leur numéro (nom provisoire « Contact », à corriger sur la fiche). |
+
+Les numéros sont normalisés au format international. Dans l'aperçu, chaque contact est coché par défaut : décochez ceux qui ne font pas partie de la communauté. Les nouveaux arrivent dans le groupe « Membres » plus le groupe choisi, marqués « nouveau ». Un contact **déjà membre** (même téléphone, même e-mail, ou même nom pour un participant WhatsApp sans numéro) n'est pas recréé : il est ajouté au groupe choisi. Pour un groupe WhatsApp, importez donc d'abord votre répertoire, puis l'export du groupe en choisissant le groupe cible. Pour nettoyer après un import, le pasteur coche des fiches dans la liste (ou toute la liste filtrée) et les supprime en lot : une fiche sans historique est supprimée définitivement, une fiche déjà contactée est anonymisée. **Aucun consentement n'est déduit d'un import** : il se coche ensuite sur chaque fiche, avec date, sauf option explicite pour les réponses « Oui » d'une colonne de consentement d'un formulaire.
+
 ## La règle absolue, et comment elle est garantie
 
 ```
@@ -154,7 +166,7 @@ cd backend && python -m pytest -q
 
 ## Feuille de route
 
-Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, communication, intelligence, bureau complet). Pistes ultérieures : notifications push natives, appels automatisés, connecteur Google Calendar, import CSV des membres, chiffrement applicatif des coordonnées, interface multilingue.
+Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, communication, intelligence, bureau complet). Pistes ultérieures : notifications push natives, appels automatisés, connecteur Google Calendar, chiffrement applicatif des coordonnées, interface multilingue.
 
 ## Licence
 
