@@ -6,13 +6,16 @@
   <title>Bureau du Pasteur</title>
   <meta name="description" content="Bureau d'IA de gestion et de communication pastorale : l'IA prépare, le pasteur valide, le système envoie.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕊️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <div id="login" class="login hidden">
     <div class="card">
       <div class="brand"><span class="logo">🕊️</span> Bureau du Pasteur</div>
-      <p class="muted">L'IA prépare · le pasteur valide · le système envoie.</p>
+      <p class="muted">L'IA prépare · le pasteur valide · le système envoie</p>
       <form id="login-form">
         <label class="field">E-mail<input type="email" name="email" required autocomplete="username"></label>
         <label class="field" style="margin-top:8px">Mot de passe<input type="password" name="password" required autocomplete="current-password"></label>
@@ -27,17 +30,17 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand"><span class="logo">🕊️</span> Bureau du Pasteur</div>
       <nav class="nav" id="nav">
-        <a href="#/dashboard" data-route="dashboard">🏠 <span>Dashboard</span></a>
-        <a href="#/membres" data-route="membres">👥 <span>Membres</span></a>
-        <a href="#/communications" data-route="communications">💬 <span>Communications</span></a>
-        <a href="#/evenements" data-route="evenements">📅 <span>Événements</span></a>
-        <a href="#/suivi" data-route="suivi">❤️ <span>Suivi</span></a>
-        <a href="#/campagnes" data-route="campagnes">📨 <span>Campagnes</span> <span class="badge count hidden" id="badge-pending"></span></a>
-        <a href="#/statistiques" data-route="statistiques">📊 <span>Statistiques</span></a>
-        <a href="#/agents" data-route="agents">🤖 <span>Agents IA</span></a>
-        <a href="#/taches" data-route="taches">📋 <span>Tâches</span></a>
-        <a href="#/parametres" data-route="parametres">⚙️ <span>Paramètres</span></a>
-        <a href="#/securite" data-route="securite">🔐 <span>Sécurité</span></a>
+        <a href="#/dashboard" data-route="dashboard"><span>🏠</span> <span>Dashboard</span></a>
+        <a href="#/membres" data-route="membres"><span>👥</span> <span>Membres</span></a>
+        <a href="#/communications" data-route="communications"><span>💬</span> <span>Communications</span></a>
+        <a href="#/evenements" data-route="evenements"><span>📅</span> <span>Événements</span></a>
+        <a href="#/suivi" data-route="suivi"><span>❤️</span> <span>Suivi</span></a>
+        <a href="#/campagnes" data-route="campagnes"><span>📨</span> <span>Campagnes</span> <span class="badge count hidden" id="badge-pending"></span></a>
+        <a href="#/statistiques" data-route="statistiques"><span>📊</span> <span>Statistiques</span></a>
+        <a href="#/agents" data-route="agents"><span>🤖</span> <span>Agents IA</span></a>
+        <a href="#/taches" data-route="taches"><span>📋</span> <span>Tâches</span></a>
+        <a href="#/parametres" data-route="parametres"><span>⚙️</span> <span>Paramètres</span></a>
+        <a href="#/securite" data-route="securite"><span>🔐</span> <span>Sécurité</span></a>
       </nav>
       <hr>
       <div class="small muted" style="padding:0 10px">
