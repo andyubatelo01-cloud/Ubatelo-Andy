@@ -13,7 +13,7 @@ from prometheus_client.core import (
 )
 from prometheus_client.registry import Collector
 
-from .model import MesureEquipement, SourceMesures
+from .model import ETATS_SANTE, MesureEquipement, SourceMesures
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +21,8 @@ LABELS = ["salle", "equipement", "constructeur", "type"]
 
 # (attribut, nom de métrique, aide, type)
 DEFINITIONS = [
+    ("en_ligne", "mtr_device_online", "Équipement en ligne selon son connecteur (1 = en ligne).", "gauge"),
+    ("present", "mtr_device_present", "Périphérique détecté dans la salle (1 = présent).", "gauge"),
     ("http_disponible", "mtr_http_up", "Disponibilité HTTP de l'équipement (1 = joignable).", "gauge"),
     ("http_temps_reponse_s", "mtr_http_response_seconds", "Temps de réponse HTTP en secondes.", "gauge"),
     ("http_debit_octets_s", "mtr_http_throughput_bytes_per_second", "Débit HTTP en octets par seconde.", "gauge"),
@@ -65,7 +67,20 @@ class CollecteurMTR(Collector):
                     continue
                 familles[attr].add_metric(_labels(m), float(valeur))
 
+        sante = GaugeMetricFamily(
+            "mtr_device_health",
+            "État de santé remonté par le connecteur : 1 pour l'état courant, 0 pour les autres.",
+            labels=LABELS + ["etat"],
+        )
+        for m in mesures:
+            if m.sante is None:
+                continue
+            etat = m.sante if m.sante in ETATS_SANTE else "inconnu"
+            for e in ETATS_SANTE:
+                sante.add_metric(_labels(m) + [e], 1.0 if e == etat else 0.0)
+
         yield from familles.values()
+        yield sante
 
         yield GaugeMetricFamily(
             "mtr_exporter_scrape_success",

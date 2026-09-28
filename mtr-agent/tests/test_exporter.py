@@ -20,6 +20,9 @@ from mtr_agent.exporter.simulation import SimulateurMesures
 
 MDP = "motdepasse-de-test-123"
 METRIQUES_OBLIGATOIRES = [
+    "mtr_device_online",
+    "mtr_device_present",
+    "mtr_device_health",
     "mtr_http_up",
     "mtr_http_response_seconds",
     "mtr_http_throughput_bytes_per_second",
@@ -125,3 +128,21 @@ def test_tableau_de_bord_utilise_les_metriques_exposees():
     exprs = " ".join(t["expr"] for p in dash["panels"] for t in p.get("targets", []))
     for nom in METRIQUES_OBLIGATOIRES:
         assert nom in exprs, nom
+
+
+def test_etat_sante_presence():
+    m = MesureEquipement("S", "Cam", "Jabra", "camera", en_ligne=False, sante="critique", present=True)
+    texte = generate_latest(construire_registre(lambda: [m])).decode()
+    base = 'constructeur="Jabra",equipement="Cam",salle="S",type="camera"'
+    assert f"mtr_device_online{{{base}}} 0.0" in texte
+    assert f"mtr_device_present{{{base}}} 1.0" in texte
+    sante = 'mtr_device_health{constructeur="Jabra",equipement="Cam",etat="%s",salle="S",type="camera"}'
+    assert sante % "critique" + " 1.0" in texte
+    assert sante % "ok" + " 0.0" in texte
+
+
+def test_sante_inattendue_devient_inconnu():
+    m = MesureEquipement("S", "E", "Neat", "mtr", sante="bizarre")
+    texte = generate_latest(construire_registre(lambda: [m])).decode()
+    assert 'etat="inconnu",salle="S",type="mtr"} 1.0' in texte
+    assert 'etat="bizarre"' not in texte

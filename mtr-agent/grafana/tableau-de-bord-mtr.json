@@ -30,7 +30,7 @@
   ],
   "timezone": "browser",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "editable": true,
   "refresh": "30s",
   "time": {
@@ -338,6 +338,461 @@
       ]
     },
     {
+      "id": 19,
+      "type": "stat",
+      "title": "Équipements hors ligne",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "count(mtr_device_online{salle=~\"$salle\", equipement=~\"$equipement\"} == 0) or vector(0)",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "Santé critique",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 5,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "count(mtr_device_health{salle=~\"$salle\", equipement=~\"$equipement\", etat=\"critique\"} == 1) or vector(0)",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Santé en avertissement",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "count(mtr_device_health{salle=~\"$salle\", equipement=~\"$equipement\", etat=\"avertissement\"} == 1) or vector(0)",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Périphériques absents",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 5,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "count(mtr_device_present{salle=~\"$salle\", equipement=~\"$equipement\"} == 0) or vector(0)",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "row",
+      "title": "État des équipements",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 24,
+      "type": "state-timeline",
+      "title": "En ligne",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "En ligne",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "Hors ligne",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "legend": {
+          "showLegend": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "mtr_device_online{salle=~\"$salle\", equipement=~\"$equipement\"}",
+          "legendFormat": "{{salle}} / {{equipement}}"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "state-timeline",
+      "title": "Santé",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 10,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "OK",
+                  "color": "green",
+                  "index": 0
+                },
+                "1": {
+                  "text": "Avertissement",
+                  "color": "orange",
+                  "index": 1
+                },
+                "2": {
+                  "text": "Critique",
+                  "color": "red",
+                  "index": 2
+                },
+                "3": {
+                  "text": "Inconnu",
+                  "color": "text",
+                  "index": 3
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "legend": {
+          "showLegend": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "1 * sum by (salle, equipement) (mtr_device_health{salle=~\"$salle\", equipement=~\"$equipement\", etat=\"avertissement\"}) + 2 * sum by (salle, equipement) (mtr_device_health{salle=~\"$salle\", equipement=~\"$equipement\", etat=\"critique\"}) + 3 * sum by (salle, equipement) (mtr_device_health{salle=~\"$salle\", equipement=~\"$equipement\", etat=\"inconnu\"})",
+          "legendFormat": "{{salle}} / {{equipement}}"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "type": "state-timeline",
+      "title": "Présence des périphériques",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 10,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "Présent",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "Absent",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "legend": {
+          "showLegend": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "mtr_device_present{salle=~\"$salle\", equipement=~\"$equipement\"}",
+          "legendFormat": "{{salle}} / {{equipement}}"
+        }
+      ]
+    },
+    {
       "id": 6,
       "type": "table",
       "title": "État par équipement",
@@ -347,7 +802,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 19,
         "w": 24,
         "h": 9
       },
@@ -411,6 +866,26 @@
           "expr": "mtr_memory_usage_ratio{salle=~\"$salle\", equipement=~\"$equipement\"}",
           "format": "table",
           "instant": true
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "mtr_device_online{salle=~\"$salle\", equipement=~\"$equipement\"}",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "mtr_device_present{salle=~\"$salle\", equipement=~\"$equipement\"}",
+          "format": "table",
+          "instant": true
         }
       ],
       "transformations": [
@@ -437,7 +912,9 @@
               "Value #C": "Perte de paquets",
               "Value #D": "Latence",
               "Value #E": "CPU",
-              "Value #F": "Mémoire"
+              "Value #F": "Mémoire",
+              "Value #G": "En ligne",
+              "Value #H": "Présent"
             }
           }
         }
@@ -540,6 +1017,70 @@
                 "value": "percentunit"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "En ligne"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Oui",
+                        "color": "green"
+                      },
+                      "0": {
+                        "text": "Non",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Présent"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Oui",
+                        "color": "green"
+                      },
+                      "0": {
+                        "text": "Non",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
           }
         ]
       },
@@ -560,7 +1101,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 28,
         "w": 24,
         "h": 1
       },
@@ -577,7 +1118,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 15,
+        "y": 29,
         "w": 8,
         "h": 8
       },
@@ -631,7 +1172,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 15,
+        "y": 29,
         "w": 8,
         "h": 8
       },
@@ -703,7 +1244,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 15,
+        "y": 29,
         "w": 8,
         "h": 8
       },
@@ -751,7 +1292,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 23,
+        "y": 37,
         "w": 24,
         "h": 1
       },
@@ -768,7 +1309,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 24,
+        "y": 38,
         "w": 6,
         "h": 8
       },
@@ -840,7 +1381,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 24,
+        "y": 38,
         "w": 6,
         "h": 8
       },
@@ -912,7 +1453,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 24,
+        "y": 38,
         "w": 6,
         "h": 8
       },
@@ -984,7 +1525,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 24,
+        "y": 38,
         "w": 6,
         "h": 8
       },
@@ -1032,7 +1573,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 46,
         "w": 24,
         "h": 1
       },
@@ -1049,7 +1590,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 33,
+        "y": 47,
         "w": 12,
         "h": 8
       },
@@ -1123,7 +1664,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 33,
+        "y": 47,
         "w": 12,
         "h": 8
       },

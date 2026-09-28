@@ -5,6 +5,9 @@ par salle et par équipement (labels `salle`, `equipement`, `constructeur`, `typ
 
 | Métrique | Unité |
 |---|---|
+| `mtr_device_online` | 1 = en ligne selon le connecteur |
+| `mtr_device_present` | 1 = périphérique détecté dans la salle |
+| `mtr_device_health{etat="ok\|avertissement\|critique\|inconnu"}` | 1 pour l'état courant |
 | `mtr_http_up` | 1 = joignable, 0 = injoignable |
 | `mtr_http_response_seconds` | secondes |
 | `mtr_http_throughput_bytes_per_second` | octets/s |

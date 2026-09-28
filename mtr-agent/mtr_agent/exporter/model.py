@@ -11,6 +11,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Iterable, Optional
 
+# Valeurs admises pour ``MesureEquipement.sante``
+ETATS_SANTE = ("ok", "avertissement", "critique", "inconnu")
+
 
 @dataclass(frozen=True)
 class MesureEquipement:
@@ -24,6 +27,11 @@ class MesureEquipement:
     equipement: str
     constructeur: str
     type_equipement: str  # "mtr", "camera", "ecran", "micro", "barre_video", ...
+
+    # État remonté par le connecteur
+    en_ligne: Optional[bool] = None  # l'équipement répond à sa plateforme / API
+    sante: Optional[str] = None  # une valeur de ETATS_SANTE
+    present: Optional[bool] = None  # périphérique détecté par la MTR / le système de salle
 
     # Métriques obligatoires du cahier de test des salles
     http_disponible: Optional[bool] = None

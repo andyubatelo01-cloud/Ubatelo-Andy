@@ -49,10 +49,16 @@ class SimulateurMesures:
     def _suivant(self, m: MesureEquipement) -> MesureEquipement:
         r = self._rng
         joignable = r.random() > 0.03
+        present = r.random() > 0.02
+        if joignable:
+            sante = r.choices(["ok", "avertissement", "critique"], weights=[90, 8, 2])[0]
+        else:
+            sante = "inconnu"
+        etat = dict(en_ligne=joignable, sante=sante, present=present)
         echecs = (m.echecs_tcp_total or 0) + (0 if joignable else r.randint(1, 3))
         if not joignable:
             return replace(
-                m, http_disponible=False, http_temps_reponse_s=None,
+                m, **etat, http_disponible=False, http_temps_reponse_s=None,
                 http_debit_octets_s=0.0, perte_paquets_ratio=1.0,
                 latence_s=None, gigue_s=None, echecs_tcp_total=echecs,
                 cpu_ratio=None, memoire_ratio=None,
@@ -60,6 +66,7 @@ class SimulateurMesures:
         est_mtr = m.type_equipement == "mtr"
         return replace(
             m,
+            **etat,
             http_disponible=True,
             http_temps_reponse_s=round(r.uniform(0.04, 0.35), 4),
             http_debit_octets_s=round(r.uniform(2e5, 4e6) if est_mtr else r.uniform(2e4, 5e5)),
