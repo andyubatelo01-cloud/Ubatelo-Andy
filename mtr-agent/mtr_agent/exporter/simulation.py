@@ -10,10 +10,10 @@ from .model import MesureEquipement
 
 # (salle, équipement, constructeur, type)
 PARC_SIMULE = [
-    ("Salle Agathe", "MTR-Agathe", "Lenovo", "mtr"),
-    ("Salle Agathe", "Cam-Agathe", "Jabra", "camera"),
-    ("Salle Agathe", "Ecran-Agathe", "Sony", "ecran"),
-    ("Salle Agathe", "Affichage-Agathe", "Zebrix", "affichage"),
+    ("Salle Mirabeau", "MTR-Mirabeau", "Lenovo", "mtr"),
+    ("Salle Mirabeau", "Cam-Mirabeau", "Jabra", "camera"),
+    ("Salle Mirabeau", "Ecran-Mirabeau", "Sony", "ecran"),
+    ("Salle Mirabeau", "Affichage-Mirabeau", "Zebrix", "affichage"),
     ("Salle Monet", "MTR-Monet", "Cisco", "mtr"),
     ("Salle Monet", "Barre-Monet", "Poly/HP", "barre_video"),
     ("Salle Monet", "Reservation-Monet", "Ochno", "tablette"),

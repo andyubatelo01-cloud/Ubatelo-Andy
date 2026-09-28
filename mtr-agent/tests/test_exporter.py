@@ -43,8 +43,8 @@ def test_toutes_les_metriques_obligatoires_sont_exposees():
     texte = generate_latest(construire_registre(SimulateurMesures(graine=1))).decode()
     for nom in METRIQUES_OBLIGATOIRES:
         assert f'{nom}{{constructeur="' in texte, nom
-    assert 'salle="Salle Agathe"' in texte
-    assert 'equipement="MTR-Agathe"' in texte
+    assert 'salle="Salle Mirabeau"' in texte
+    assert 'equipement="MTR-Mirabeau"' in texte
 
 
 def test_valeur_absente_non_exposee():

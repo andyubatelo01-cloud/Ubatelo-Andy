@@ -41,7 +41,7 @@ def test_teams_rooms_lists_devices_with_pagination(http):
     http.add("GET", f"{GRAPH}/teamwork/devices", {
         "value": [{"id": "d1", "deviceType": "teamsRoom", "healthStatus": "healthy",
                    "hardwareDetail": {"manufacturer": "Lenovo", "model": "ThinkSmart Core"},
-                   "currentUser": {"displayName": "Salle Agathe"}}],
+                   "currentUser": {"displayName": "Salle Mirabeau"}}],
         "@odata.nextLink": f"{GRAPH}/teamwork/devices?page=2",
     })
     http.add("GET", f"{GRAPH}/teamwork/devices?page=2", {
@@ -52,7 +52,7 @@ def test_teams_rooms_lists_devices_with_pagination(http):
     assert result.up, result.errors
     devs = by_id(result.devices)
     assert devs["d1"].health is Health.HEALTHY and devs["d1"].online
-    assert devs["d1"].room == "Salle Agathe" and devs["d1"].model == "Lenovo ThinkSmart Core"
+    assert devs["d1"].room == "Salle Mirabeau" and devs["d1"].model == "Lenovo ThinkSmart Core"
     assert devs["d2"].health is Health.OFFLINE and not devs["d2"].online
     # le jeton est demandé une seule fois et envoyé à Graph
     assert sum(c["url"] == TOKEN_URL for c in http.calls) == 1
@@ -86,7 +86,7 @@ def test_teams_pro_reads_health_and_flags_missing_peripheral(http):
 
 
 def test_cisco_maps_webex_status_and_workspace(http):
-    http.add("GET", "https://webexapis.com/v1/workspaces", {"items": [{"id": "w1", "displayName": "Salle Agathe"}]})
+    http.add("GET", "https://webexapis.com/v1/workspaces", {"items": [{"id": "w1", "displayName": "Salle Mirabeau"}]})
     http.add("GET", "https://webexapis.com/v1/devices", {"items": [
         {"id": "c1", "displayName": "Room Bar", "product": "Cisco Room Bar", "software": "RoomOS 11.20",
          "workspaceId": "w1", "connectionStatus": "connected", "errorCodes": []},
@@ -96,14 +96,14 @@ def test_cisco_maps_webex_status_and_workspace(http):
 
     devs = by_id(CiscoConnector({"token": "tok"}, http).collect().devices)
 
-    assert devs["c1"].health is Health.HEALTHY and devs["c1"].room == "Salle Agathe"
+    assert devs["c1"].health is Health.HEALTHY and devs["c1"].room == "Salle Mirabeau"
     assert devs["c2"].health is Health.DEGRADED and devs["c2"].online
     assert devs["c3"].health is Health.OFFLINE and not devs["c3"].online
 
 
 def test_neat_pulse_endpoints(http):
     http.add("GET", "https://api.pulse.neat.no/v1/orgs/org1/endpoints", {"endpoints": [
-        {"id": "n1", "name": "Neat Bar", "roomName": "Agathe", "model": "Neat Bar Pro", "firmwareVersion": "NFA1.2",
+        {"id": "n1", "name": "Neat Bar", "roomName": "Mirabeau", "model": "Neat Bar Pro", "firmwareVersion": "NFA1.2",
          "connected": True, "cpuUsage": 31.5, "memoryUsage": 62,
          "peripherals": [{"name": "Neat Pad", "connected": True}]},
         {"id": "n2", "name": "Neat Board", "connected": False},
@@ -136,7 +136,7 @@ def test_poly_lens_graphql(http):
     pages = iter([
         {"data": {"deviceSearch": {"edges": [{"node": {"id": "p1", "name": "Studio X50", "connected": True,
                                                        "hardwareModel": "Studio X50", "softwareVersion": "4.1",
-                                                       "room": {"name": "Agathe"}}}],
+                                                       "room": {"name": "Mirabeau"}}}],
                                    "pageInfo": {"nextToken": "n2", "hasNextPage": True}}}},
         {"data": {"deviceSearch": {"edges": [{"node": {"id": "p2", "name": "TC10", "connected": False}}],
                                    "pageInfo": {"nextToken": None, "hasNextPage": False}}}},
@@ -147,7 +147,7 @@ def test_poly_lens_graphql(http):
     result = PolyConnector({"client_id": "c", "client_secret": "s"}, http).collect()
 
     devs = by_id(result.devices)
-    assert devs["p1"].online and devs["p1"].room == "Agathe"
+    assert devs["p1"].online and devs["p1"].room == "Mirabeau"
     assert devs["p2"].health is Health.OFFLINE
     graphql_calls = [c for c in http.calls if c["url"].endswith("/graphql")]
     assert graphql_calls[1]["json"]["variables"] == {"next": "n2"}
@@ -195,13 +195,13 @@ def test_lenovo_thinksmart(http):
 
 def test_ochno_hub_and_ports(http):
     http.add("GET", "https://ochno.example/api/v1/devices", {"devices": [
-        {"id": "o1", "name": "Hub", "room": {"name": "Agathe"}, "online": True,
+        {"id": "o1", "name": "Hub", "room": {"name": "Mirabeau"}, "online": True,
          "ports": [{"name": "HDMI 1", "online": True}, {"name": "USB-C", "online": False}]},
     ]})
 
     dev = OchnoConnector({"base_url": "https://ochno.example", "token": "t"}, http).collect().devices[0]
 
-    assert dev.room == "Agathe" and dev.online
+    assert dev.room == "Mirabeau" and dev.online
     assert dev.peripherals == {"HDMI 1": True, "USB-C": False}
 
 

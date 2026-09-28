@@ -14,11 +14,11 @@ from mtr_agent.probes.network import NetworkProbeResult
 
 
 def test_vers_mesure_convertit_unites():
-    dev = DeviceStatus("jabra", "j1", name="Cam-Agathe", room="Salle Agathe", cpu_percent=25, memory_percent=50)
+    dev = DeviceStatus("jabra", "j1", name="Cam-Mirabeau", room="Salle Mirabeau", cpu_percent=25, memory_percent=50)
     http = HttpProbeResult("https://j1/", True, 200, 0.5, 1000)
     reseau = NetworkProbeResult("j1:443", 4, [10.0, 30.0, 20.0])
     m = vers_mesure(dev, http, reseau)
-    assert (m.salle, m.equipement, m.constructeur, m.type_equipement) == ("Salle Agathe", "Cam-Agathe", "Jabra",
+    assert (m.salle, m.equipement, m.constructeur, m.type_equipement) == ("Salle Mirabeau", "Cam-Mirabeau", "Jabra",
                                                                            "camera")
     assert m.http_disponible and m.http_temps_reponse_s == 0.5 and m.http_debit_octets_s == 2000
     assert m.perte_paquets_ratio == 0.25 and m.echecs_tcp_total == 1
