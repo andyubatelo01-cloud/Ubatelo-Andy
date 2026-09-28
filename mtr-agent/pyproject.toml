@@ -16,4 +16,4 @@ dev = ["pytest>=8.0"]
 testpaths = ["tests"]
 
 [tool.setuptools]
-packages = ["mtr_agent", "mtr_agent.connectors", "mtr_agent.probes"]
+packages = ["mtr_agent", "mtr_agent.connectors", "mtr_agent.exporter", "mtr_agent.probes"]

@@ -1,5 +1,7 @@
 """Point d'entrée : ``python -m mtr_agent.exporter [--simulation]``.
 
+Sans ``--simulation``, interroge les connecteurs configurés (voir ``mtr_agent.reel``).
+
 Variables d'environnement :
   MTR_EXPORTER_USER            utilisateur Basic Auth (défaut : prometheus)
   MTR_EXPORTER_PASSWORD_HASH   hachage pbkdf2 (recommandé)
@@ -45,20 +47,23 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Erreur : {e}", file=sys.stderr)
         return 2
 
-    if not args.simulation:
-        # Branchement des connecteurs réels à venir : l'exporteur attend une
-        # SourceMesures (voir model.py). Pas de repli silencieux sur la simulation.
-        print("Aucune source réelle branchée pour l'instant : relancez avec --simulation.", file=sys.stderr)
-        return 2
-
-    from .simulation import SimulateurMesures
+    if args.simulation:
+        from .simulation import SimulateurMesures
+        source, mode = SimulateurMesures(), "simulation"
+    else:
+        from ..reel import source_reelle
+        try:
+            source, mode = source_reelle(), "équipements réels"
+        except ValueError as e:
+            print(f"Erreur : {e}", file=sys.stderr)
+            return 2
 
     serveur = creer_serveur(
-        SimulateurMesures(), ids, hote=args.hote, port=args.port,
+        source, ids, hote=args.hote, port=args.port,
         cert=os.environ.get("MTR_EXPORTER_TLS_CERT"), cle=os.environ.get("MTR_EXPORTER_TLS_KEY"),
     )
     schema = "https" if os.environ.get("MTR_EXPORTER_TLS_CERT") else "http"
-    logging.info("Exporteur (simulation) sur %s://%s:%d/metrics", schema, args.hote, args.port)
+    logging.info("Exporteur (%s) sur %s://%s:%d/metrics", mode, schema, args.hote, args.port)
     try:
         serveur.serve_forever()
     except KeyboardInterrupt:
