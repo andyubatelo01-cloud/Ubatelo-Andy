@@ -1,0 +1,12 @@
+# Extrait de configuration Prometheus pour interroger l'exporteur MTR.
+# Le mot de passe est lu depuis un fichier (jamais écrit ici) :
+#   echo -n '<mot de passe>' > /etc/prometheus/mtr_exporter_password && chmod 600 ...
+scrape_configs:
+  - job_name: mtr-agent
+    scrape_interval: 30s
+    scheme: http            # passer à https si MTR_EXPORTER_TLS_CERT/KEY sont définis
+    basic_auth:
+      username: prometheus
+      password_file: /etc/prometheus/mtr_exporter_password
+    static_configs:
+      - targets: ["127.0.0.1:9469"]
