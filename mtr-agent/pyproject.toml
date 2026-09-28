@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mtr-agent"
+version = "0.1.0"
+description = "Agent de collecte de l'état des salles Microsoft Teams Rooms et de leurs périphériques, exposé pour Grafana."
+requires-python = ">=3.11"
+dependencies = ["prometheus-client>=0.20"]  # exporteur uniquement
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["mtr_agent", "mtr_agent.connectors", "mtr_agent.probes"]
