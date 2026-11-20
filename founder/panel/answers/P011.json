@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "On a déjà un groupe WhatsApp et un bénévole qui s'occupe de la communication, ça ne nous coûte rien et les gens répondent. Je ne vais pas aller demander au conseil 560 € par an pour remplacer quelque chose qui marche, surtout que c'est moi qui devrais tout apprendre et tout valider en plus de mon ministère.",
+  "objection": "Mettre la liste des membres d'une église, avec leurs numéros et leurs anniversaires, chez une société que je ne connais pas et qui vient de naître ; et de toute façon mes 140 contacts sont à moitié sans nom de famille, l'import ne donnera rien de propre, il faudra tout refaire à la main.",
+  "would_change_my_mind": "Qu'un pasteur que je connais, d'une église de notre taille, me montre sur son propre téléphone qu'il l'utilise depuis six mois et que ses membres ont bien reçu les messages, le jour où mon bénévole arrête.",
+  "price_too_cheap": 3,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "Je passe déjà mes samedis soirs à rédiger le rappel du culte avec un assistant IA et à relancer les absents un par un sur WhatsApp ; un outil qui prépare tout ça et ne l'envoie qu'après mon OK depuis le téléphone, avec le premier mois gratuit et sans engagement, je l'essaie. Mais 39 € HT par mois sur le budget de l'église, je ne le garderai que si la gestion des consentements est vraiment sérieuse et si les membres ne trouvent pas ça impersonnel.",
+  "objection": "L'import depuis mon groupe WhatsApp me fait peur : la moitié de mes membres n'ont jamais signé de consentement écrit, et je ne sais pas où sont hébergées leurs données ni qui en est responsable au sens du RGPD. Si c'est moi qui porte le risque, le confort ne vaut pas le souci.",
+  "would_change_my_mind": "",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 49,
+  "price_too_expensive": 79
+}

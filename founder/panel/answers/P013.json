@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Le « rien ne part sans vous » me rassure un peu, mais c'est quand même une machine qui écrit à mes membres, et je ne sais pas où partent leurs noms, leurs numéros et leurs absences. À 39 € ce n'est pas le prix qui me retient, c'est que je ne confie pas ma liste de membres à un service que je ne connais pas, même avec un mois gratuit.",
+  "objection": "Où sont hébergées les fiches des membres, qui y a accès, et est-ce que les données servent à entraîner quelque chose ? Rien dans l'offre ne le dit, et importer tout mon groupe WhatsApp sur un serveur inconnu, c'est non tant que je n'ai pas de réponse écrite.",
+  "would_change_my_mind": "Une garantie claire et écrite : données hébergées en France ou en Europe, conformité RGPD avec un contrat que je peux montrer au conseil, suppression et export possibles à tout moment, et un autre pasteur que je connais qui l'utilise déjà et me dit que ses membres n'ont rien vu d'étrange.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 50,
+  "price_too_expensive": 80
+}

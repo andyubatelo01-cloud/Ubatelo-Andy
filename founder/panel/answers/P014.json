@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Personne de mon union ne l'utilise, et je ne confie pas la liste de mes membres à une plateforme que je ne connais que par une démo en ligne. Mon WhatsApp et mon tableur me suffisent pour 150 personnes, même si c'est bricolé.",
+  "objection": "Les noms, numéros, anniversaires et présences au culte de mes membres sur le serveur d'une start-up : où sont-ils hébergés, qui y a accès, qu'en reste-t-il si je résilie ? Rien dans l'annonce ne répond à ça.",
+  "would_change_my_mind": "Qu'un pasteur de mon union s'en serve depuis six mois et me dise lui-même que les données sont bien protégées et que ça lui fait gagner du temps.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 45,
+  "price_too_expensive": 70
+}

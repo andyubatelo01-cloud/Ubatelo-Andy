@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "46,80 € par mois, ça fait plus de 560 € par an pris sur un budget d'église qui tient déjà à peine, pour faire ce que je fais déjà gratuitement avec mon groupe WhatsApp et mes pouces. Je testerais peut-être le mois gratuit par curiosité, mais je ne vois pas le conseil voter cette dépense.",
+  "objection": "WhatsApp est gratuit et mes 80 membres y sont déjà ; je ne vois pas pourquoi je paierais un abonnement pour un secrétariat, alors que ce qui me manque c'est du temps, pas un outil, et que je ne suis pas sûre que mes aînés lisent un SMS ou un mail venu d'un logiciel plutôt que de moi.",
+  "would_change_my_mind": "Qu'un collègue pasteur d'une église de notre taille me montre sur son téléphone qu'en vingt minutes il a importé ses 140 contacts avec leurs noms et qu'il gagne vraiment plusieurs heures par semaine, pour moins de 15 € par mois.",
+  "price_too_cheap": 3,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 30
+}

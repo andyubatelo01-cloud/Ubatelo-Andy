@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Nous sommes 70 à peu près, tout le monde est dans le groupe WhatsApp, et le rappel du culte je l'écris en trois minutes le samedi soir. Payer 46,80 € chaque mois sur l'argent de l'église pour qu'une machine prépare ce que j'écris déjà moi-même, le conseil ne comprendrait pas et moi non plus.",
+  "objection": "Qui décroche si ça ne marche pas un dimanche à 8 h ? On ne dit rien sur le support, ni qui est derrière. Et je n'ai pas le temps, avec mes 35 heures, de recopier 70 fiches membres et de courir après des consentements.",
+  "would_change_my_mind": "Qu'un pasteur que je connais, d'une église comme la mienne, me montre sur son téléphone que ça lui fait vraiment gagner du temps depuis six mois et qu'il a quelqu'un à appeler quand ça coince.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

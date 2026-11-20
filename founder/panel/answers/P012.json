@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Personne dans mon union ne l'utilise, et je n'ai jamais entendu un collègue en parler. Je ne confie pas la liste de mes membres et la communication de l'église à un outil que je découvre sur un écran, même avec un mois gratuit.",
+  "objection": "Les 39 € HT, c'est déjà presque 560 € par an à défendre devant le conseil, et les SMS « au coût réel » ne me disent pas ce que je paierai vraiment chaque mois : avec 80 personnes et trois ou quatre rappels, ça grimpe sans qu'on le voie venir.",
+  "would_change_my_mind": "Qu'un pasteur de mon union que je connais l'utilise depuis quelques mois et me dise que ça lui a vraiment permis de repérer les absents avant qu'il ne soit trop tard.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 45,
+  "price_too_expensive": 70
+}
