@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Je découvre ça en scrollant, personne dans mon union ne m'en a parlé. Je ne mets pas le répertoire de mon église chez un inconnu sur la foi d'une page de vente, même bien écrite ; j'attends qu'un collègue me dise qu'il l'utilise depuis six mois et que ça tient.",
+  "objection": "Les coordonnées de mes membres sur un serveur, c'est trop sensible pour une église. Hébergé en France et RGPD signé, c'est bien sur le papier, mais qui est derrière ? Combien d'églises l'utilisent déjà ? Si la boîte ferme dans un an, mes données vont où ? Et honnêtement, avec 35 heures ailleurs dans la semaine, mon groupe WhatsApp et mon tableur font le travail, mal mais gratuitement.",
+  "would_change_my_mind": "Qu'un pasteur de mon union que je connais me dise de vive voix qu'il l'utilise, que ses membres ont accepté le consentement sans histoire, et que les absents repérés lui ont vraiment servi. À ce moment-là, le programme des 10 églises fondatrices à moitié prix devient tentant.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 40,
+  "price_too_expensive": 70
+}

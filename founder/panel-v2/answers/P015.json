@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "trust",
+  "reason": "Ma première peur, c'est le RGPD, et pour une fois quelqu'un y répond avant que je pose la question : hébergement en France, consentement demandé à chaque membre, un dossier de deux pages que je peux poser devant le conseil. À 29 € HT sur un budget d'église, avec 60 jours remboursés et le tarif fondateur, je l'essaie dès ce mois-ci.",
+  "objection": "Le suivi des absents suppose que quelqu'un pointe la présence chaque dimanche : qui le fait chez nous, et est-ce que mes anciens vont répondre à une demande de consentement envoyée par un outil qu'ils ne connaissent pas plutôt que par moi ?",
+  "would_change_my_mind": "Si le conseil refuse ou si, après la visio d'installation, moins de la moitié des membres ont donné leur consentement, j'arrête avant la fin des 60 jours.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 45,
+  "price_too_expensive": 80
+}

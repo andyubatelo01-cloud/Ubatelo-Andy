@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "On a déjà un groupe WhatsApp qui marche et un bénévole qui s'occupe de la communication ; je ne vais pas demander au conseil 400 € par an pour remplacer quelque chose qui ne nous coûte rien. Le suivi des absents m'intéresse, mais pas assez pour changer toutes nos habitudes à 59 ans.",
+  "objection": "Mes membres reçoivent aujourd'hui un message de moi, de mon numéro ; avec un outil, ça devient un message d'une plateforme, et il faudrait en plus demander un consentement à chacun et nettoyer 140 contacts dont la moitié n'a même pas de nom de famille. J'ai peur que ce soit plus de travail et plus froid, pas moins.",
+  "would_change_my_mind": "Qu'un pasteur d'une église comme la mienne me dise, de vive voix, qu'il l'utilise depuis un an et que ses membres n'ont rien senti de différent.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

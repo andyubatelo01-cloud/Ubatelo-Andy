@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Mon groupe WhatsApp fait déjà le travail, gratuitement, et mes 70 membres y sont tous ; je vois bien qui manque au culte sans qu'un téléphone me le dise. Mettre 22,80 € par mois de l'argent de l'église dans un outil pour envoyer un message que je tape en deux minutes, je n'arrive pas à le justifier devant le conseil.",
+  "objection": "Je ne vois pas ce que ça m'apporte de plus que mon groupe WhatsApp actuel, et j'ai peur de la mise en route : mes 140 contacts à moitié sans nom, les demandes de consentement à envoyer à des gens de 70 ans qui ne répondront jamais, et moi à 58 ans qui n'ai pas envie d'apprendre un nouvel outil.",
+  "would_change_my_mind": "Qu'un bénévole de l'église me propose de s'en occuper lui-même, ou que je découvre qu'un membre a quitté l'église depuis deux mois sans que je m'en sois aperçue.",
+  "price_too_cheap": 3,
+  "price_cheap": 8,
+  "price_expensive": 19,
+  "price_too_expensive": 30
+}

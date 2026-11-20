@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Mon problème du dimanche soir, c'est de répondre à Paulette et à Marc un par un, pas d'envoyer le rappel du culte : ça, le groupe WhatsApp le fait gratuitement en trente secondes. Avec 70 membres, je sais déjà qui manque depuis trois semaines, je n'ai pas besoin qu'un logiciel me le dise pour 23 € par mois.",
+  "objection": "On me promet que rien ne part sans ma validation et que mes données n'entraînent pas d'IA, mais « dans vos mots » veut dire qu'une machine écrit à ma place, et une liste d'absents sur un serveur, même en France, c'est encore mes brebis fichées quelque part. Je n'ai que la parole d'une page web, et je ne présente pas ça au conseil sur une parole.",
+  "would_change_my_mind": "Qu'un pasteur que je connais, d'une église comme la mienne, l'utilise depuis six mois et me dise devant un café que ses membres ont donné leur consentement sans grincer et que ça lui a rendu son dimanche soir ; je prendrais alors la place d'église fondatrice à moitié prix.",
+  "price_too_cheap": 5,
+  "price_cheap": 9,
+  "price_expensive": 19,
+  "price_too_expensive": 30
+}

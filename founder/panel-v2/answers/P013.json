@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Sur le papier, ils répondent point par point à ce qui me fait peur, et c'est justement ce qui me rend prudente : je ne connais pas ces gens, je ne sais pas qui est derrière, et je ne vais pas confier le répertoire de mes 250 membres à un outil découvert en scrollant un dimanche soir. Je garde le lien, j'en parle au conseil, mais je ne sors pas la carte cette semaine.",
+  "objection": "Le « rappel du culte dans vos mots » : qui écrit vraiment ce message ? Si c'est une IA qui rédige et que je ne fais que cliquer, ce n'est plus moi qui parle à mes membres, c'est une machine avec ma signature. Et l'alerte sur les absents me gêne aussi : je visite mes brebis, je ne les fiche pas.",
+  "would_change_my_mind": "Qu'un pasteur que je connais, d'une église comme la mienne, l'utilise depuis plusieurs mois et me montre sur son téléphone que les messages sont vraiment les siens, tapés par lui ou son bénévole, sans aucune rédaction automatique.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 59,
+  "price_too_expensive": 90
+}
