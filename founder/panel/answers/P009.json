@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Le suivi des absents me parle, j'ai perdu trois familles sans m'en rendre compte. Mais importer mon groupe WhatsApp et les contacts de mon iPhone dans un outil en ligne, sans savoir qui a consenti à quoi et où sont stockées les données, je ne peux pas le présenter au conseil sereinement ; je garde mon tableur pour l'instant.",
+  "objection": "Le RGPD : mes membres n'ont jamais signé de consentement, et je ne sais ni où sont hébergées les données ni qui est responsable si ça fuit ; 'fiches avec consentements' ne me dit pas comment je régularise 150 personnes.",
+  "would_change_my_mind": "Une garantie RGPD claire (hébergement en France ou UE, modèle de consentement à faire signer aux membres, contrat de sous-traitance) et le témoignage d'une autre église évangélique française de ma taille qui l'utilise déjà.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 45
+}

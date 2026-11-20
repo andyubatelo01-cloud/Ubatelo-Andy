@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Je fais déjà tout ça avec le groupe WhatsApp et mon tableur, ça marche et ça ne coûte rien. Je ne vais pas aller devant le conseil défendre 47 € par mois, soit plus de 560 € par an, pour un outil qui fait ce que je fais déjà gratuitement, même si je reconnais que le suivi des absents et les anniversaires me passent souvent à travers.",
+  "objection": "Je devrais mettre les noms, numéros et consentements de 250 membres dans le service d'une entreprise que je ne connais pas, sans savoir qui est derrière ni combien de temps elle existera, et c'est le conseil qui me le reprocherait en premier.",
+  "would_change_my_mind": "Qu'un pasteur d'une église que je connais, de même taille, me dise qu'il l'utilise depuis un an, que son conseil l'a validé et que ça lui fait gagner plusieurs heures par semaine.",
+  "price_too_cheap": 3,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

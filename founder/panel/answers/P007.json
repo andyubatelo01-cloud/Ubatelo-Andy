@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "Je rédige déjà mes annonces avec une IA, donc ce qui m'intéresse ici ce n'est pas la rédaction, c'est l'import de mes 140 contacts en vrac, les rappels préparés d'avance et le fait que rien ne parte sans que j'appuie sur valider. Premier mois gratuit, sans engagement, 39 € HT sur un budget d'église de 150 000 € : je l'essaie sur la démo puis sur ma vraie liste, et si le conseil ne hurle pas, je garde.",
+  "objection": "Je confie la liste de mes membres, avec leurs numéros et leurs consentements, à une société dont je ne sais rien : où sont les données, qui peut les lire, que devient la liste si j'arrête ? Et le suivi des absents suppose que quelqu'un note les présences chaque dimanche, ce que personne ne fait chez nous aujourd'hui.",
+  "would_change_my_mind": "Si les données ne sont pas hébergées en Europe ou si je ne peux pas exporter et supprimer toute ma liste en un clic, je ne vais pas au-delà du mois gratuit.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 59,
+  "price_too_expensive": 90
+}

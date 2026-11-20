@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Omar",
+  "age": 32,
+  "segment": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+  "income": 42000,
+  "behaviour": "Prudent avec l'argent de l'église",
+  "behaviour_how": "Chaque dépense récurrente passe devant le conseil d'église ; compare, demande des devis, préfère le gratuit.",
+  "objection": "Mes membres n'ont pas tous donné leur consentement et le RGPD me fait peur.",
+  "habit": "le conseil d'église se réunit une fois par mois et discute chaque euro"
+ },
+ {
+  "id": "P002",
+  "name": "Raj",
+  "age": 41,
+  "segment": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+  "income": 30000,
+  "behaviour": "Méfiant de l'IA",
+  "behaviour_how": "Ne veut pas qu'une machine parle à ses membres ni que leurs données partent sur un serveur ; a besoin de garanties avant d'essayer.",
+  "objection": "On a déjà un groupe WhatsApp et un bénévole qui s'occupe de la communication.",
+  "habit": "trois familles ont cessé de venir sans que tu t'en aperçoives avant six semaines"
+ },
+ {
+  "id": "P003",
+  "name": "Emil",
+  "age": 43,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 36000,
+  "behaviour": "Délègue à un bénévole",
+  "behaviour_how": "Un jeune de l'église fait les affiches sur Canva et les envois ; le pasteur ne touche pas aux outils.",
+  "objection": "Les SMS en plus, ça va coûter combien au final ?",
+  "habit": "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille"
+ },
+ {
+  "id": "P004",
+  "name": "Owen",
+  "age": 54,
+  "segment": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+  "income": 51000,
+  "behaviour": "Prudent avec l'argent de l'église",
+  "behaviour_how": "Chaque dépense récurrente passe devant le conseil d'église ; compare, demande des devis, préfère le gratuit.",
+  "objection": "39 € par mois, c'est une dépense de plus pour l'église alors que WhatsApp est gratuit.",
+  "habit": "tu travailles 35 heures par semaine en dehors de l'église"
+ },
+ {
+  "id": "P005",
+  "name": "Sana",
+  "age": 60,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 34000,
+  "behaviour": "Tout sur WhatsApp",
+  "behaviour_how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main.",
+  "objection": "On a déjà un groupe WhatsApp et un bénévole qui s'occupe de la communication.",
+  "habit": "tu travailles 35 heures par semaine en dehors de l'église"
+ },
+ {
+  "id": "P006",
+  "name": "Maya",
+  "age": 44,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 26000,
+  "behaviour": "Prudent avec l'argent de l'église",
+  "behaviour_how": "Chaque dépense récurrente passe devant le conseil d'église ; compare, demande des devis, préfère le gratuit.",
+  "objection": "Les coordonnées de mes membres sur un serveur, c'est trop sensible pour une église.",
+  "habit": "une bénévole t'envoie les affiches sur Canva le vendredi soir"
+ },
+ {
+  "id": "P007",
+  "name": "Selin",
+  "age": 44,
+  "segment": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+  "income": 32000,
+  "behaviour": "Curieux de l'IA",
+  "behaviour_how": "Utilise déjà un assistant IA grand public pour rédiger ses messages et ses annonces ; essaie volontiers ce qui est nouveau.",
+  "objection": "Je ne veux pas qu'une IA parle à mes membres à ma place.",
+  "habit": "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille"
+ },
+ {
+  "id": "P008",
+  "name": "Ruby",
+  "age": 46,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 23000,
+  "behaviour": "Délègue à un bénévole",
+  "behaviour_how": "Un jeune de l'église fait les affiches sur Canva et les envois ; le pasteur ne touche pas aux outils.",
+  "objection": "Les SMS en plus, ça va coûter combien au final ?",
+  "habit": "trois familles ont cessé de venir sans que tu t'en aperçoives avant six semaines"
+ },
+ {
+  "id": "P009",
+  "name": "Nora",
+  "age": 33,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 28000,
+  "behaviour": "Prudent avec l'argent de l'église",
+  "behaviour_how": "Chaque dépense récurrente passe devant le conseil d'église ; compare, demande des devis, préfère le gratuit.",
+  "objection": "Mes membres n'ont pas tous donné leur consentement et le RGPD me fait peur.",
+  "habit": "trois familles ont cessé de venir sans que tu t'en aperçoives avant six semaines"
+ },
+ {
+  "id": "P010",
+  "name": "Fatima",
+  "age": 35,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 35000,
+  "behaviour": "Suit les recommandations de pairs",
+  "behaviour_how": "N'adopte un outil que si un autre pasteur de son union ou de son réseau l'utilise déjà et le recommande.",
+  "objection": "39 € par mois, c'est une dépense de plus pour l'église alors que WhatsApp est gratuit.",
+  "habit": "tu prépares ta prédication le samedi soir et tu envoies le rappel du culte depuis ton lit"
+ },
+ {
+  "id": "P011",
+  "name": "Tariq",
+  "age": 59,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 29000,
+  "behaviour": "Tout sur WhatsApp",
+  "behaviour_how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main.",
+  "objection": "On a déjà un groupe WhatsApp et un bénévole qui s'occupe de la communication.",
+  "habit": "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille"
+ },
+ {
+  "id": "P012",
+  "name": "Felix",
+  "age": 52,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 24000,
+  "behaviour": "Suit les recommandations de pairs",
+  "behaviour_how": "N'adopte un outil que si un autre pasteur de son union ou de son réseau l'utilise déjà et le recommande.",
+  "objection": "Les SMS en plus, ça va coûter combien au final ?",
+  "habit": "trois familles ont cessé de venir sans que tu t'en aperçoives avant six semaines"
+ },
+ {
+  "id": "P013",
+  "name": "Zoe",
+  "age": 43,
+  "segment": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+  "income": 42000,
+  "behaviour": "Méfiant de l'IA",
+  "behaviour_how": "Ne veut pas qu'une machine parle à ses membres ni que leurs données partent sur un serveur ; a besoin de garanties avant d'essayer.",
+  "objection": "Je ne veux pas qu'une IA parle à mes membres à ma place.",
+  "habit": "tu passes ton dimanche soir à répondre à des messages WhatsApp un par un"
+ },
+ {
+  "id": "P014",
+  "name": "Dev",
+  "age": 47,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 42000,
+  "behaviour": "Suit les recommandations de pairs",
+  "behaviour_how": "N'adopte un outil que si un autre pasteur de son union ou de son réseau l'utilise déjà et le recommande.",
+  "objection": "Les coordonnées de mes membres sur un serveur, c'est trop sensible pour une église.",
+  "habit": "tu travailles 35 heures par semaine en dehors de l'église"
+ },
+ {
+  "id": "P015",
+  "name": "Yusuf",
+  "age": 47,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 31000,
+  "behaviour": "Curieux de l'IA",
+  "behaviour_how": "Utilise déjà un assistant IA grand public pour rédiger ses messages et ses annonces ; essaie volontiers ce qui est nouveau.",
+  "objection": "Mes membres n'ont pas tous donné leur consentement et le RGPD me fait peur.",
+  "habit": "tu prépares ta prédication le samedi soir et tu envoies le rappel du culte depuis ton lit"
+ },
+ {
+  "id": "P016",
+  "name": "Theo",
+  "age": 55,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 25000,
+  "behaviour": "Tout sur WhatsApp",
+  "behaviour_how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main.",
+  "objection": "Qui va nous aider si ça ne marche pas un dimanche matin ?",
+  "habit": "tu travailles 35 heures par semaine en dehors de l'église"
+ },
+ {
+  "id": "P017",
+  "name": "Alma",
+  "age": 58,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 31000,
+  "behaviour": "Tout sur WhatsApp",
+  "behaviour_how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main.",
+  "objection": "39 € par mois, c'est une dépense de plus pour l'église alors que WhatsApp est gratuit.",
+  "habit": "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille"
+ },
+ {
+  "id": "P018",
+  "name": "Freya",
+  "age": 62,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 41000,
+  "behaviour": "Délègue à un bénévole",
+  "behaviour_how": "Un jeune de l'église fait les affiches sur Canva et les envois ; le pasteur ne touche pas aux outils.",
+  "objection": "Les SMS en plus, ça va coûter combien au final ?",
+  "habit": "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille"
+ },
+ {
+  "id": "P019",
+  "name": "Harper",
+  "age": 54,
+  "segment": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+  "income": 29000,
+  "behaviour": "Méfiant de l'IA",
+  "behaviour_how": "Ne veut pas qu'une machine parle à ses membres ni que leurs données partent sur un serveur ; a besoin de garanties avant d'essayer.",
+  "objection": "39 € par mois, c'est une dépense de plus pour l'église alors que WhatsApp est gratuit.",
+  "habit": "tu passes ton dimanche soir à répondre à des messages WhatsApp un par un"
+ },
+ {
+  "id": "P020",
+  "name": "Emma",
+  "age": 48,
+  "segment": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+  "income": 31000,
+  "behaviour": "Tout sur WhatsApp",
+  "behaviour_how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main.",
+  "objection": "Je ne veux pas qu'une IA parle à mes membres à ma place.",
+  "habit": "une bénévole t'envoie les affiches sur Canva le vendredi soir"
+ }
+]

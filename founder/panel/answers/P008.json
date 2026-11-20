@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Chez nous c'est un jeune de l'église qui fait les affiches et les envois, moi je ne touche pas aux outils ; là tout repasse par mon téléphone pour valider, donc ça me rajoute du travail au lieu de m'en enlever. Et le groupe WhatsApp, lui, ne coûte rien.",
+  "objection": "47 € par mois c'est déjà un poste à défendre devant le conseil, et les SMS « au coût réel » par-dessus, je ne sais pas ce que ça donne à la fin du mois pour 80 personnes relancées plusieurs fois.",
+  "would_change_my_mind": "Un prix tout compris avec les SMS plafonnés et clairement annoncés, autour de 20 € par mois, et que mon bénévole puisse tout piloter à ma place avec juste un oui de ma part. Le suivi des absents, par contre, j'en aurais eu besoin avant de perdre trois familles.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 50
+}

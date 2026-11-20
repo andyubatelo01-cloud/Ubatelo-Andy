@@ -1,0 +1,36 @@
+{
+  "business": "Bureau du Pasteur (abonnement SaaS pour églises locales, France)",
+  "unit": "église-mois",
+  "_note": "Une unité = une église abonnée pendant un mois. days_per_month vaut 1 pour que « par jour » se lise « par mois » : plan_per_day = nombre d'églises abonnées. Sources et fiabilité de chaque chiffre : founder/cfo-sources.md.",
+  "price": 39.00,
+  "variable": [
+    {"label": "Frais de paiement Stripe (1,5 % + 0,25 €) [public]", "cost": 0.84},
+    {"label": "API IA, ~40 demandes/mois (claude-opus-5) [estimation]", "cost": 1.00},
+    {"label": "WhatsApp inclus : forfait 200 messages à ~0,033 € (Meta utility France + Twilio) [public]", "cost": 6.60},
+    {"label": "E-mails transactionnels [estimation]", "cost": 0.50},
+    {"label": "Hébergement, part variable [estimation]", "cost": 0.30},
+    {"label": "SMS : refacturés au coût réel, 0 € de marge [public]", "cost": 0.00}
+  ],
+  "fixed_monthly": [
+    {"label": "Serveurs UE (prod + sauvegarde/préprod) et stockage [public]", "cost": 25.00},
+    {"label": "Domaine et certificats [estimation]", "cost": 1.50},
+    {"label": "Outils : e-mail pro, facturation/compta, suivi d'erreurs [estimation]", "cost": 40.00},
+    {"label": "Assurance RC professionnelle [estimation]", "cost": 25.00},
+    {"label": "Expert-comptable en ligne [estimation]", "cost": 60.00},
+    {"label": "Numéro Twilio mutualisé [public]", "cost": 1.15},
+    {"label": "Marketing récurrent (déplacements, impression, annonces) [estimation]", "cost": 150.00},
+    {"label": "Rémunération du fondateur : 0 € la première année (hypothèse explicite) [fondateur]", "cost": 0.00}
+  ],
+  "startup": [
+    {"label": "Création de la société [estimation]", "cost": 300},
+    {"label": "Dépôt de marque INPI, 1 classe [public]", "cost": 190},
+    {"label": "Avis juridique RGPD (art. 9), CGV, DPA [estimation]", "cost": 1500},
+    {"label": "Site vitrine, vidéo de démonstration [estimation]", "cost": 500},
+    {"label": "Lancement : rassemblements de pasteurs, flyers, annonces [estimation]", "cost": 1000},
+    {"label": "Crédit prépayé Twilio / API IA [estimation]", "cost": 300}
+  ],
+  "days_per_month": 1,
+  "capacity_per_day": 150,
+  "plan_per_day": 60,
+  "ramp_per_day": [0, 2, 3, 5, 7, 9, 12, 15, 18, 21, 24, 28]
+}

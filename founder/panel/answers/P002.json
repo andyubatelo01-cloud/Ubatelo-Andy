@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Le suivi des absents me parle, parce que j'ai perdu trois familles sans m'en rendre compte, mais je ne vais pas mettre les noms, numéros et absences de mes membres dans un outil en ligne que je ne connais pas, sur la foi d'une page. Pour l'instant on garde le groupe WhatsApp et notre bénévole.",
+  "objection": "Où sont stockées les données de mes membres, qui y a accès, et est-ce qu'une intelligence artificielle les lit ou écrit à leur place ? Le « rien ne part sans vous » rassure pour l'envoi, pas pour ce qui se passe avec les fiches derrière.",
+  "would_change_my_mind": "Un pasteur que je connais qui l'utilise depuis six mois et me le recommande, plus un engagement écrit et clair : données hébergées en France ou en Europe, jamais revendues ni utilisées pour entraîner une IA, et exportables/supprimables en un clic si on arrête.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 60,
+  "price_too_expensive": 90
+}

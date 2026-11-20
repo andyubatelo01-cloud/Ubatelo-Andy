@@ -1,0 +1,91 @@
+{
+ "n": 20,
+ "seed": 7,
+ "customer": {
+  "business": "Bureau du Pasteur (secrétariat d'IA pour églises locales, abonnement en ligne)",
+  "target": "Pasteurs d'églises évangéliques ou protestantes indépendantes en France, de 50 à 300 membres, sans secrétaire salariée, qui gèrent eux-mêmes la communication avec leur téléphone, un groupe WhatsApp et un tableur. Note : les montants sont en euros (le revenu indiqué est votre revenu personnel annuel, pas le budget de l'église) ; réponds en français.",
+  "where": "France, d'abord Île-de-France",
+  "age": [
+   32,
+   62
+  ],
+  "segments": [
+   {
+    "name": "Pasteur bi-vocationnel d'une église de 50 à 100 membres (budget annuel de l'église ≈ 30 000 à 60 000 €, pas de salarié)",
+    "share": 0.4,
+    "income": [
+     20000,
+     36000
+    ]
+   },
+   {
+    "name": "Pasteur à plein temps d'une église de 100 à 200 membres (budget annuel ≈ 60 000 à 150 000 €, un seul salarié : lui)",
+    "share": 0.35,
+    "income": [
+     26000,
+     42000
+    ]
+   },
+   {
+    "name": "Pasteur d'une église de 200 à 300 membres avec un conseil et des responsables bénévoles (budget annuel ≈ 150 000 à 300 000 €)",
+    "share": 0.25,
+    "income": [
+     30000,
+     55000
+    ]
+   }
+  ],
+  "behaviours": [
+   {
+    "name": "Tout sur WhatsApp",
+    "share": 0.25,
+    "how": "Gère toute la communication de l'église depuis son téléphone, dans un ou deux groupes WhatsApp, et tape chaque message à la main."
+   },
+   {
+    "name": "Prudent avec l'argent de l'église",
+    "share": 0.2,
+    "how": "Chaque dépense récurrente passe devant le conseil d'église ; compare, demande des devis, préfère le gratuit."
+   },
+   {
+    "name": "Suit les recommandations de pairs",
+    "share": 0.15,
+    "how": "N'adopte un outil que si un autre pasteur de son union ou de son réseau l'utilise déjà et le recommande."
+   },
+   {
+    "name": "Délègue à un bénévole",
+    "share": 0.15,
+    "how": "Un jeune de l'église fait les affiches sur Canva et les envois ; le pasteur ne touche pas aux outils."
+   },
+   {
+    "name": "Curieux de l'IA",
+    "share": 0.12,
+    "how": "Utilise déjà un assistant IA grand public pour rédiger ses messages et ses annonces ; essaie volontiers ce qui est nouveau."
+   },
+   {
+    "name": "Méfiant de l'IA",
+    "share": 0.13,
+    "how": "Ne veut pas qu'une machine parle à ses membres ni que leurs données partent sur un serveur ; a besoin de garanties avant d'essayer."
+   }
+  ],
+  "objections": [
+   "39 € par mois, c'est une dépense de plus pour l'église alors que WhatsApp est gratuit.",
+   "Je ne veux pas qu'une IA parle à mes membres à ma place.",
+   "Mes membres n'ont pas tous donné leur consentement et le RGPD me fait peur.",
+   "Je n'ai pas le temps d'importer et de nettoyer 150 contacts.",
+   "Qui va nous aider si ça ne marche pas un dimanche matin ?",
+   "Les SMS en plus, ça va coûter combien au final ?",
+   "On a déjà un groupe WhatsApp et un bénévole qui s'occupe de la communication.",
+   "Les coordonnées de mes membres sur un serveur, c'est trop sensible pour une église."
+  ],
+  "habits": [
+   "tu prépares ta prédication le samedi soir et tu envoies le rappel du culte depuis ton lit",
+   "tu as 140 contacts dans ton iPhone dont la moitié sans nom de famille",
+   "le conseil d'église se réunit une fois par mois et discute chaque euro",
+   "tu travailles 35 heures par semaine en dehors de l'église",
+   "trois familles ont cessé de venir sans que tu t'en aperçoives avant six semaines",
+   "une bénévole t'envoie les affiches sur Canva le vendredi soir",
+   "tu passes ton dimanche soir à répondre à des messages WhatsApp un par un"
+  ]
+ },
+ "pitch": "Bureau du Pasteur : un secrétariat en ligne pour votre église.\nIl prépare vos messages aux membres (rappel du culte, invitations, suivi des absents, anniversaires) par SMS, WhatsApp et e-mail, en français, et ne les envoie qu'après votre validation depuis votre téléphone : rien ne part sans vous.\nFiches des membres avec consentements, import depuis votre iPhone ou votre groupe WhatsApp, calendrier des événements avec rappels automatiques préparés à l'avance.\n39 € HT par mois et par église (46,80 € TTC), WhatsApp et e-mail compris ; les SMS sont facturés au coût réel, environ 0,07 € l'unité.\nSans engagement, premier mois gratuit. Démonstration en ligne sur une église fictive de 43 membres."
+}
