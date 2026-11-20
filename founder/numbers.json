@@ -1,12 +1,12 @@
 {
   "business": "Bureau du Pasteur (abonnement SaaS pour églises locales, France)",
   "unit": "église-mois",
-  "_note": "Une unité = une église abonnée pendant un mois, moyenne pondérée des trois formules de founder/pricing.md (40 % Petite assemblée 19 €, 35 % Assemblée 29 €, 25 % Grande assemblée 49 € : prix moyen 30,00 € HT). days_per_month vaut 1 pour que « par jour » se lise « par mois » : plan_per_day = nombre d'églises abonnées. Sources et fiabilité : founder/cfo-sources.md. v2 après le panel et la tarification.",
+  "_note": "Une unité = une église abonnée pendant un mois, moyenne pondérée des trois formules de founder/pricing.md (40 % Petite assemblée 19 €, 35 % Assemblée 29 €, 25 % Grande assemblée 49 € : prix moyen 30,00 € HT). days_per_month vaut 1 pour que « par jour » se lise « par mois » : plan_per_day = nombre d'églises abonnées. Sources et fiabilité : founder/cfo-sources.md. v2 après le panel et la tarification. v3 après founder/ops.md : SEPA au lieu de la carte, expert-comptable 99 €, outils 20 €, e-mail 0,11 €, création 195 €, capacité 60 églises (goulot du dimanche).",
   "price": 30.0,
   "variable": [
     {
-      "label": "Frais de paiement Stripe 1,5 % + 0,25 € (moyenne des 3 formules) [public]",
-      "cost": 0.71
+      "label": "Frais de paiement : prélèvement SEPA Stripe 0,35 € + Billing 0,7 % [public]",
+      "cost": 0.56
     },
     {
       "label": "API IA, 20 à 40 demandes/mois selon la formule (sonnet pour les petites, opus pour les grandes) [estimation]",
@@ -18,7 +18,7 @@
     },
     {
       "label": "E-mails transactionnels [estimation]",
-      "cost": 0.42
+      "cost": 0.11
     },
     {
       "label": "Hébergement, part variable [estimation]",
@@ -44,15 +44,15 @@
     },
     {
       "label": "Outils : e-mail pro, facturation/compta, suivi d'erreurs [estimation]",
-      "cost": 40.0
+      "cost": 20.0
     },
     {
       "label": "Assurance RC professionnelle [estimation]",
       "cost": 25.0
     },
     {
-      "label": "Expert-comptable en ligne [estimation]",
-      "cost": 60.0
+      "label": "Expert-comptable en ligne, SASU avec liasse (Indy Sérénité 99 € HT) [public]",
+      "cost": 99.0
     },
     {
       "label": "Numéro Twilio mutualisé [public]",
@@ -69,8 +69,8 @@
   ],
   "startup": [
     {
-      "label": "Création de la société [estimation]",
-      "cost": 300
+      "label": "Création de la société SASU (greffe + annonce légale) [public]",
+      "cost": 195
     },
     {
       "label": "Dépôt de marque INPI, 1 classe [public]",
@@ -94,7 +94,7 @@
     }
   ],
   "days_per_month": 1,
-  "capacity_per_day": 100,
+  "capacity_per_day": 60,
   "plan_per_day": 60,
   "ramp_per_day": [
     0,
