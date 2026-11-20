@@ -110,6 +110,33 @@ La probabilité perçue reste le point faible : seule une liste d'églises nomm�
 
 Le pitch v2 (`founder/pitch.md`, l'ancien est `founder/pitch-v1.md`) est présenté aux **mêmes 20 pasteurs** (graine 7) dans `founder/panel-v2/`. Résultat avant : 2 achètent, 18 passent (10 %). Résultat après : voir la section « Re-test » ci-dessous, ajoutée une fois le panel v2 compté.
 
+
+## Re-test : pitch v2 devant les mêmes 20 pasteurs (`founder/panel-v2/results.md`)
+
+**Avant : 2 achètent, 18 passent (10 %). Après : 2 achètent, 18 passent (10 %).** Les deux acheteurs sont les mêmes (P007 et P015, les deux pasteurs « curieux de l'IA » d'églises de plus de 150 membres). **Le taux d'achat n'a pas bougé. Il faut le dire tel quel : le problème n'est pas d'abord l'offre, c'est le segment.**
+
+Ce qui a bougé sous la surface :
+
+| Raison du refus | v1 | v2 | Lecture |
+|---|---|---|---|
+| Confiance (données, qui est derrière) | 9 | 6 | Le dossier pour le conseil et l'hébergement en France ont été lus et crus « sur le papier » ; il reste « je ne connais pas l'entreprise » et « aucun pasteur que je connais ne l'utilise », que seule une liste d'églises nommées lève. |
+| Habitude (WhatsApp gratuit + bénévole) | 7 | 7 | Inchangé. Le groupe WhatsApp gratuit est le vrai concurrent. |
+| Besoin (« je connais mes 70 membres de vue ») | 1 | 5 | **Nouveau.** En nommant le résultat (« les absents de plus de trois semaines ont un nom »), l'offre a révélé que les petites assemblées n'ont pas ce problème : le pasteur voit les bancs. |
+| Prix | 1 | 1 | Le prix a cessé d'être l'objection principale ; les formules sont dans la fourchette (PME 40,01 € sur v2). |
+
+Objections nouvelles, à prendre au sérieux :
+1. **« Qui pointe les présences chaque dimanche ? »** (P002, P003, P008, P015) : la promesse des absents suppose une saisie que personne ne fait. La solution S9 (présences en un geste) doit être montrée, pas sous-entendue, et le mot « absents » doit être remplacé par ce que l'outil fait vraiment : « les personnes qu'on n'a pas vues ».
+2. **« La demande de consentement envoyée par l'outil, c'est une machine qui écrit à mes membres avant moi »** (P007, P002, P016, P001) : la demande de consentement doit partir du numéro ou du nom du pasteur, dans ses mots, et pouvoir être faite en chaire + papier pour les aînés.
+3. **« Dans vos mots » a sonné faux** (P013, P019, P020) : si une IA rédige, le pasteur l'entend. Le pitch doit dire la vérité simplement : « vous écrivez ou vous relisez ; l'outil n'invente rien et n'envoie rien ».
+4. **« Deux mois pour le conseil, sans carte bancaire »** (P001, P009, P020) : la décision est collective ; l'essai doit pouvoir être présenté au conseil avant tout paiement.
+
+Conséquences pour la suite du dossier :
+- **Segment** : la première cible n'est pas l'église de 50 à 100 membres (0 % d'achat deux fois, 8 cartes sur 20) mais le pasteur d'une assemblée de **150 à 300 membres**, déjà utilisateur d'un assistant IA, qui ne connaît plus tous les visages. `/founder-marketing` doit partir de là.
+- **Pitch v3 (à tester avec de vrais pasteurs)** : retirer « dans vos mots », expliquer la présence en un geste, consentement au nom du pasteur, « essai de deux mois présentable au conseil, sans carte ». Non testé ici : le panel simulé a donné ce qu'il pouvait, le reste se mesure avec dix pasteurs réels (`founder/launch.md`).
+- **Prix** : les formules tiennent (aucune objection de prix nouvelle hors P004 sur la Grande assemblée à 49 €). Le test 49 € contre 39 € de `founder/pricing.md` reste nécessaire.
+
+Rappel : acheteurs simulés, taux d'achat à lire comme un plafond, aucune de ces phrases n'est un témoignage.
+
 ## Règles respectées
 
 Aucun témoignage, aucun avis, aucune rareté ou remise inventés. Les promesses (hébergement en France, DPA, remboursement, assistance du dimanche, installation en visio) sont livrables par un fondateur seul jusqu'à environ 50 églises ; au-delà, S5 et S8 doivent être réévaluées. Les règles françaises sur les garanties et la publicité s'appliquent ; ceci n'est pas un avis juridique.
