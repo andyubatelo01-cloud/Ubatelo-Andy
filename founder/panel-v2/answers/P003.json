@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Le rappel du dimanche, notre groupe WhatsApp le fait déjà gratuitement, et ce n'est pas moi qui touche aux outils. Trente-cinq euros par mois pour que le conseil me demande ensuite qui pointe les présences chaque dimanche, je ne vois pas le gain net.",
+  "objection": "Pour savoir qui est absent depuis trois semaines, il faut bien que quelqu'un note qui est là chaque dimanche ; personne ne le fait chez nous, et ce n'est pas écrit comment ça se passe. Et les SMS « au coût réel », au final ça fait combien sur l'année ?",
+  "would_change_my_mind": "Qu'un collègue pasteur d'une église de notre taille me dise qu'il l'utilise depuis six mois, que les présences se notent sans lui et que la facture n'a jamais dépassé l'abonnement.",
+  "price_too_cheap": 5,
+  "price_cheap": 12,
+  "price_expensive": 35,
+  "price_too_expensive": 50
+}

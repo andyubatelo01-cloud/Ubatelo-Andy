@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "Avec 200 à 300 membres on tombe sur la formule à 49 € HT, soit presque 60 € TTC par mois, 700 € par an que je devrais défendre devant le conseil alors que notre groupe WhatsApp et mon tableur font déjà le rappel du dimanche gratuitement. Le suivi des absents et le dossier RGPD me parlent, mais pas assez pour que je porte une dépense récurrente de plus cette année.",
+  "objection": "Le conseil me demandera pourquoi payer 700 € par an pour envoyer un message que j'envoie déjà moi-même sur WhatsApp en deux minutes le samedi soir, et je n'aurai pas de bonne réponse.",
+  "would_change_my_mind": "Si la formule jusqu'à 300 membres était autour de 20 € HT par mois garantis à vie (pas seulement pour dix églises contre un appel mensuel), et qu'un responsable du conseil, pas moi, demandait à l'essayer avec les 60 jours remboursés.",
+  "price_too_cheap": 5,
+  "price_cheap": 12,
+  "price_expensive": 29,
+  "price_too_expensive": 45
+}

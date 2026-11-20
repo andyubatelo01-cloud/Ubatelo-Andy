@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "Je passe déjà mes dimanches soirs à retrouver qui était absent et à recopier des numéros sans nom de famille ; si un bénévole prépare et que je ne fais que valider d'un geste, c'est exactement la décharge que je cherchais. À 58,80 € TTC par mois sur le budget de l'église, avec les 60 jours remboursés et le dossier pour le conseil, j'essaie.",
+  "objection": "Ce qui me gêne le plus, c'est la demande de consentement envoyée par l'outil à chaque membre : c'est le premier message qu'ils recevront et il ne viendra pas de moi. Je ne veux pas qu'une IA parle à mes membres à ma place, même pour leur demander la permission.",
+  "would_change_my_mind": "Si la demande de consentement part de mon numéro, dans mes mots, et pas depuis l'outil, je n'ai plus de réserve. À l'inverse, si le conseil refuse 700 € par an pour ce que WhatsApp fait gratuitement, je laisse tomber.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 49,
+  "price_too_expensive": 90
+}

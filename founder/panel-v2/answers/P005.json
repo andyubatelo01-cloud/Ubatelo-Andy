@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "On a déjà un groupe WhatsApp qui marche et un bénévole qui s'occupe de la communication, ça ne coûte rien et avec 70 personnes je sais très bien qui manque depuis trois dimanches sans qu'un téléphone me le dise. Payer 273 € par an à l'église pour faire ce qu'on fait déjà à la main, je ne saurais pas le défendre devant le conseil.",
+  "objection": "Je ne vois pas ce que ça ferait de plus que notre groupe WhatsApp, et je crains que la demande de consentement à chaque membre complique la vie de nos anciens et donne l'impression qu'on les fiche.",
+  "would_change_my_mind": "Que mon bénévole arrête ou que l'église dépasse 150 membres et que je commence à perdre des gens de vue ; là le nom des absents sur mon téléphone vaudrait son prix.",
+  "price_too_cheap": 5,
+  "price_cheap": 9,
+  "price_expensive": 19,
+  "price_too_expensive": 30
+}
