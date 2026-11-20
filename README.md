@@ -170,7 +170,7 @@ Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, 
 
 ## Compétences « Founder » (Claude Code)
 
-Le dossier `.claude/skills/` contient les onze compétences Claude Code du projet [founder-skill](https://github.com/Jakeschincariol/founder-skill) (licence MIT, copie dans `.claude/skills/founder-LICENSE`). Elles servent à tester le projet comme une activité avant de le lancer : `/founder-board`, `/founder-competitors`, `/founder-consumer`, `/founder-pricing`, `/founder-offer`, `/founder-cfo`, `/founder-marketing`, `/founder-brand`, `/founder-ops`, `/founder-launch`, `/founder-plan`. À lancer dans cet ordre ; leurs résultats s'écrivent dans un dossier `founder/`. Les outils Python associés n'utilisent que la bibliothèque standard et ne touchent pas au réseau.
+Le dossier `.claude/skills/` contient les onze compétences Claude Code du projet [founder-skill](https://github.com/Jakeschincariol/founder-skill) (licence MIT, copie dans `.claude/skills/founder-LICENSE`). Elles servent à tester le projet comme une activité avant de le lancer : `/founder-board`, `/founder-competitors`, `/founder-consumer`, `/founder-pricing`, `/founder-offer`, `/founder-cfo`, `/founder-marketing`, `/founder-brand`, `/founder-ops`, `/founder-launch`, `/founder-plan`. À lancer dans cet ordre ; leurs résultats s'écrivent dans un dossier `founder/`. Le dossier `founder/` de ce dépôt contient l'analyse complète de Bureau du Pasteur (conseil, concurrents, panel simulé, prix, offre, chiffres, marketing, marque, opérations, lancement) ; point d'entrée : `founder/summary.md`, puis `founder/business-plan.md` et `founder/one-pager.md`. Les outils Python associés n'utilisent que la bibliothèque standard et ne touchent pas au réseau.
 
 ## Licence
 
