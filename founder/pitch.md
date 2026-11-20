@@ -1,5 +1,5 @@
-Bureau du Pasteur : un secrétariat en ligne pour votre église.
-Il prépare vos messages aux membres (rappel du culte, invitations, suivi des absents, anniversaires) par SMS, WhatsApp et e-mail, en français, et ne les envoie qu'après votre validation depuis votre téléphone : rien ne part sans vous.
-Fiches des membres avec consentements, import depuis votre iPhone ou votre groupe WhatsApp, calendrier des événements avec rappels automatiques préparés à l'avance.
-39 € HT par mois et par église (46,80 € TTC), WhatsApp et e-mail compris ; les SMS sont facturés au coût réel, environ 0,07 € l'unité.
-Sans engagement, premier mois gratuit. Démonstration en ligne sur une église fictive de 43 membres.
+Bureau du Pasteur, la Formule Église sereine : chaque dimanche, vos membres reçoivent le rappel du culte dans vos mots, les absents de plus de trois semaines ont un nom sur votre téléphone, et rien ne part sans votre validation d'un geste. Un bénévole peut tout préparer ; vous ne faites que valider.
+Vos membres restent chez vous : données hébergées en France, contrat RGPD signé, dossier de deux pages à présenter au conseil, consentements recueillis par l'outil auprès de chaque membre, export et suppression en un clic, aucune donnée utilisée pour entraîner une IA.
+Un seul chiffre pour le conseil, tout compris : 19 € HT par mois jusqu'à 100 membres (22,80 € TTC), 29 € HT jusqu'à 200 (34,80 € TTC), 49 € HT jusqu'à 300 (58,80 € TTC). Messages WhatsApp inclus (100, 300 ou 600 par mois), e-mail illimité, partage gratuit dans votre groupe WhatsApp existant. SMS en option au coût réel, sous un plafond que vous fixez ; au-delà du forfait, rien ne part sans votre accord.
+Installation faite avec vous en 30 minutes en visio (import de votre répertoire iPhone ou de votre groupe WhatsApp, nettoyage des doublons, lancement de la demande de consentement). Assistance par téléphone le dimanche matin de 7 h à 13 h.
+Satisfait ou remboursé pendant 60 jours. Si un message collectif part sans votre validation, un an d'abonnement offert. Programme des 10 églises fondatrices : moitié prix à vie contre un appel de retour mensuel.
