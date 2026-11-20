@@ -168,6 +168,10 @@ cd backend && python -m pytest -q
 
 Le système est livré complet pour la phase 1 à 4 du cahier des charges (MVP, communication, intelligence, bureau complet). Pistes ultérieures : notifications push natives, appels automatisés, connecteur Google Calendar, chiffrement applicatif des coordonnées, interface multilingue.
 
+## Compétences « Founder » (Claude Code)
+
+Le dossier `.claude/skills/` contient les onze compétences Claude Code du projet [founder-skill](https://github.com/Jakeschincariol/founder-skill) (licence MIT, copie dans `.claude/skills/founder-LICENSE`). Elles servent à tester le projet comme une activité avant de le lancer : `/founder-board`, `/founder-competitors`, `/founder-consumer`, `/founder-pricing`, `/founder-offer`, `/founder-cfo`, `/founder-marketing`, `/founder-brand`, `/founder-ops`, `/founder-launch`, `/founder-plan`. À lancer dans cet ordre ; leurs résultats s'écrivent dans un dossier `founder/`. Les outils Python associés n'utilisent que la bibliothèque standard et ne touchent pas au réseau.
+
 ## Licence
 
 Projet privé de la communauté. Les personnes des données de démonstration sont fictives.
